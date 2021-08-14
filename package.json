@@ -2,13 +2,17 @@
   "name": "perfect-boilerplate",
   "version": "0.1.0",
   "description": "The ultimate boilerplate cli for modern saas applications",
+  "license": "MIT",
+  "repository": {
+    "type": "git", 
+    "url": "https://github.com/TimCrooker/Perfect-Boilerplate"
+  },
+  "author": "Tim Crooker <timothycrooker@gmail.com>",
   "main": "index.tsx",
   "scripts": {
     "test": "jest",
     "lint": "eslint ."
   },
-  "author": "Tim Crooker <timothycrooker@gmail.com>",
-  "license": "ISC",
   "dependencies": {},
   "devDependencies": {
     "@babel/cli": "^7.14.8",
