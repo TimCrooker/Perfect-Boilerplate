@@ -4,16 +4,19 @@
   "description": "The ultimate boilerplate cli for modern saas applications",
   "license": "MIT",
   "repository": {
-    "type": "git", 
+    "type": "git",
     "url": "https://github.com/TimCrooker/Perfect-Boilerplate"
   },
   "author": "Tim Crooker <timothycrooker@gmail.com>",
   "main": "index.tsx",
   "scripts": {
-    "test": "jest",
+    "test:cov": "npm run lint && jest --coverage",
+    "test": "npm run lint && jest",
     "lint": "eslint ."
   },
-  "dependencies": {},
+  "dependencies": {
+    "sao": "^1.7.1"
+  },
   "devDependencies": {
     "@babel/cli": "^7.14.8",
     "@babel/core": "^7.15.0",
@@ -25,11 +28,27 @@
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^3.4.0",
+    "husky": "^7.0.1",
     "jest": "^27.0.6",
     "lint-staged": "^11.1.2",
     "nodemon": "^2.0.12",
     "prettier": "^2.3.2",
     "ts-node": "^10.2.0",
     "typescript": "^4.3.5"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.js": [
+      "standard --fix",
+      "git add"
+    ],
+    "*.{json,md}": [
+      "prettier --write",
+      "git add"
+    ]
   }
 }
