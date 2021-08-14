@@ -9,6 +9,8 @@
   "author": "Tim Crooker <timothycrooker@gmail.com>",
   "license": "ISC",
   "dependencies": {
-    "node": "^16.6.1"
+    "jest": "^27.0.6",
+    "node": "^16.6.1",
+    "ts-node": "^10.2.0"
   }
 }
