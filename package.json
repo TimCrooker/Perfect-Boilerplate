@@ -1,0 +1,14 @@
+{
+  "name": "perfect-boilerplate",
+  "version": "0.1.0",
+  "description": "The ultimate boilerplate cli for modern saas applications",
+  "main": "index.tsx",
+  "scripts": {
+    "test": "test"
+  },
+  "author": "Tim Crooker <timothycrooker@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "node": "^16.6.1"
+  }
+}
