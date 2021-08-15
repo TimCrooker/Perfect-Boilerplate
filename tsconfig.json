@@ -24,8 +24,8 @@
         "skipLibCheck": true /* Skip type checking of declaration files. */,
         "forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */,
         "paths": {
-            "@Helper": ["./Helper"],
-            "@Helper/*": ["./Helper/*"],
+            "@Utils": ["./Utils"],
+            "@Utils/*": ["./Utils/*"],
         }
     }
 }
