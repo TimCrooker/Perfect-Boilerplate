@@ -11,7 +11,9 @@
   "main": "index.tsx",
   "scripts": {
     "dev:cli": "nodemon --watch src -e ts --ignore lib --exec npm run build:cli",
-    "dev:ui": "npm run dev:cli && node ./lib",
+    "dev:global": "nodemon --watch src -e ts --ignore lib --exec \"npm run build:cli & npm run global\"",
+    "dev:ui": "yarn node ./lib test",
+    "global": "npm i -g --quiet",
     "test:cov": "npm run lint && jest --coverage",
     "test": "npm run lint && jest",
     "build:cli": "npm run clean:cli && tsc && babel src --out-dir lib --extensions \".ts,.js,.json\" --source-maps inline",
@@ -19,24 +21,27 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@types/prompts": "^2.0.14",
     "chalk": "^4.1.2",
     "clear": "^0.1.0",
     "commander": "6.2.0",
+    "ora": "^5.4.1",
     "path": "^0.12.7",
     "promisify": "^0.0.3",
     "prompts": "^2.4.1",
-    "sao": "^2.0.0-beta.1",
-    "temp": "^0.9.4"
+    "sao": "2.0.0-beta.1",
+    "temp": "^0.9.4",
+    "validate-npm-package-name": "^3.0.0"
   },
   "devDependencies": {
-              "@babel/cli": "^7.14.8",
+    "@babel/cli": "^7.14.8",
     "@babel/core": "^7.15.0",
     "@babel/plugin-transform-runtime": "^7.15.0",
     "@babel/preset-env": "^7.15.0",
     "@babel/preset-typescript": "^7.15.0",
     "@types/jest": "^27.0.1",
     "@types/node": "^16.6.1",
+    "@types/prompts": "^2.0.14",
+    "@types/validate-npm-package-name": "^3.0.3",
     "@typescript-eslint/eslint-plugin": "^4.29.1",
     "@typescript-eslint/parser": "^4.29.1",
     "babel-jest": "^27.0.6",
