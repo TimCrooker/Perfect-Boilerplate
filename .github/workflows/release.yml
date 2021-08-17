@@ -1,8 +1,7 @@
 name: npm Publish [released]
 
 on:
-  release:
-    types: [released]
+  release
 
 jobs:
   publish-npm:
@@ -27,3 +26,4 @@ jobs:
           npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+
