@@ -9,15 +9,14 @@
   },
   "author": "Tim Crooker <timothycrooker@gmail.com>",
   "homepage": "https://pankod.github.io/superplate/",
-  "bin": {"supersaas-boilerplate": "lib/index.js"},
+  "bin": "./lib/index.js",
   "files": [
-    "lib",
-    "templates"
-],
+    "lib"
+  ],
   "scripts": {
     "dev:cli": "nodemon --watch src -e ts --ignore lib --exec npm run build:cli",
     "dev:global": "nodemon --watch src -e ts --ignore lib --exec \"npm run build:cli & npm run global\"",
-    "dev:ui": "yarn node ./lib test",
+    "dev:ui": "yarn node ./lib test -d -s ../Perfect-Boilerplate-Plugins",
     "global": "npm i -g --quiet",
     "test:cov": "npm run lint && jest --coverage",
     "test": "npm run lint && jest",
@@ -26,6 +25,8 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@types/temp": "^0.9.1",
+    "@types/valid-url": "^1.0.3",
     "chalk": "^4.1.2",
     "clear": "^0.1.0",
     "commander": "6.2.0",
@@ -35,6 +36,7 @@
     "prompts": "^2.4.1",
     "sao": "2.0.0-beta.1",
     "temp": "^0.9.4",
+    "valid-url": "^1.0.9",
     "validate-npm-package-name": "^3.0.0"
   },
   "devDependencies": {

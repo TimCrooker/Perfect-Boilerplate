@@ -323,7 +323,7 @@ const saoConfig: GeneratorConfig = {
     /**
      * Format generated project
      */
-    await promisify(exec)(`npx prettier "${sao.outDir}" --write`)
+    // await promisify(exec)(`npx prettier "${sao.outDir}" --write`)
 
     /**
      * Create an initial commit

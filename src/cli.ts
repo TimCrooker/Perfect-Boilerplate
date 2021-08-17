@@ -1,4 +1,4 @@
-import { FSHelper } from '@Utils'
+import { FSHelper, getSource } from '@Utils'
 import commander from 'commander'
 import path from 'path'
 import prompts from 'prompts'
@@ -17,8 +17,10 @@ const cli = async (): Promise<void> => {
     .name(currentProject.name)
     .version(currentProject.version)
     .arguments('<project-directory>')
-    .usage('<project-directory>')
+    .usage(`${chalk.green('<project-directory>')} [options]`)
     .description(currentProject.description)
+    .option('-s, --source <source-path>', 'specify a custom source of plugins')
+    .option('-d, --debug', 'run the program in debug mode')
     .parse(process.argv)
 
   /**
@@ -36,73 +38,72 @@ const cli = async (): Promise<void> => {
    * Get the plugin source directory
    */
 
-  // directory with all plugin packs
-  let sourcePath = './plugins'
+  const source = await getSource(program.source)
 
-  // check if sourcePath exists
-  const validPluginSource = await FSHelper.PathExists(sourcePath)
+  let { path: sourcePath } = source
+  const { error: sourceError } = source
 
-  // error when sourcePath doesn't exist
-  if (!validPluginSource) {
+  // error when supplied source doesn't exist
+  if (sourceError) {
+    console.error(`${chalk.bold`${sourceError}`}`)
+    console.log('Source can be a remote git repository or a local path.')
     console.log()
-    console.error(
-      chalk.red('ERROR: ') +
-        'The supplied plugin source directory does not exist'
-    )
-    console.log()
+    console.log('You provided:')
+    console.log(`${chalk.blueBright(program.source)}`)
     process.exit(1)
   }
-
-  /**
-   *  Ensure validity of plugin packs supplied
-   */
 
   const packTypes = []
 
-  const pluginPacks = await FSHelper.ReadDir(sourcePath)
+  /**
+   * Verify validity and load plugin packs from supplied directory
+   */
+  if (sourcePath) {
+    const pluginPacks = await FSHelper.ReadDir(sourcePath)
 
-  // error when the source directory contains no subdirectories
-  if (pluginPacks.length === 0) {
-    console.log()
-    console.error(
-      chalk.red('ERROR: ') + 'The plugin source directory has no plugins'
-    )
-    console.log()
-    process.exit(1)
-  }
-
-  // create an array of all plugin packs and determine if they are valid
-  for (const pluginPack of pluginPacks) {
-    const pluginDirPath = `${sourcePath}/${pluginPack}`
-
-    const packIsValid = await FSHelper.ValidPluginPack(pluginDirPath)
-
-    if (packIsValid) {
-      packTypes.push({
-        title: pluginPack,
-        value: pluginPack,
-      })
-    } else {
+    // error when the plugin source contains no plugins
+    if (pluginPacks.length === 0) {
+      console.log()
       console.error(
-        chalk.red('ERROR: ') +
-          'The plugin pack ' +
-          chalk.cyan(pluginPack) +
-          ' at the directory ' +
-          chalk.cyan(pluginDirPath) +
-          ' is invalid'
+        chalk.red('ERROR: ') + 'The plugin source directory has no plugins'
       )
       console.log()
+      process.exit(1)
     }
-  }
 
-  // error when there are plugin pack directories supplied but none of them are valid
-  if (packTypes.length === 0) {
-    console.log()
-    console.error(
-      chalk.red('ERROR: ') + 'NONE of the supplied plugin packs are valid'
-    )
-    console.log()
-    process.exit(1)
+    // create a list of all plugin packs and determine if they are valid
+    for (const pluginPack of pluginPacks) {
+      const pluginDirPath = `${sourcePath}/${pluginPack}`
+
+      const packIsValid = await FSHelper.ValidPluginPack(pluginDirPath)
+
+      if (packIsValid) {
+        packTypes.push({
+          title: pluginPack,
+          value: pluginPack,
+        })
+      } else {
+        console.error(
+          chalk.red('ERROR: ') +
+            'The plugin pack ' +
+            chalk.cyan(pluginPack) +
+            ' at the directory ' +
+            chalk.cyan(pluginDirPath) +
+            ' is invalid'
+        )
+        console.log()
+      }
+    }
+
+    // error when none of the supplied plugin packs are valid
+    if (packTypes.length === 0) {
+      console.log()
+      console.error(
+        chalk.red('ERROR: ') + 'NONE of the supplied plugin packs are valid'
+      )
+      console.log()
+      process.exit(1)
+    }
   }
 
   /**

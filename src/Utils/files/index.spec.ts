@@ -1,5 +1,6 @@
 import { FSHelper } from './'
 import fs from 'fs'
+import path from 'path'
 
 const removeDir = function (path: string) {
   if (fs.existsSync(path)) {
@@ -33,7 +34,7 @@ describe('FS Helper', () => {
     expect(PathExists).toBeFalsy()
   })
 
-  const MockRootDir = './src/Utils/files/MockPluginPackDir'
+  const MockRootDir = path.resolve(__dirname, 'MockPluginPackDir')
 
   it('correctly formatted plugin pack', async () => {
     removeDir(MockRootDir)

@@ -16,7 +16,7 @@ import {
  * @param pluginPath path to the plugin pack directory
  * @param pluginName name of the plugin to target
  * @param fileName name of the file inside of a plugin to target
- * @returns
+ * @returns the file being targeted in the specified plugin
  */
 const getPluginFile: <ReturnType extends any>(
   pluginPath: string,
@@ -38,6 +38,13 @@ const getPluginFile: <ReturnType extends any>(
   }
 }
 
+/**
+ * Stringify the contents of a file inside of the plugin provided
+ *
+ * @param pluginPath path to the plugin pack directory
+ * @param pluginName name of the plugin to target
+ * @param fileName name of the file inside of the plugin to target
+ */
 const getStringFile = async (
   pluginPath: string,
   pluginName: string,
@@ -58,6 +65,16 @@ const getStringFile = async (
   }
 }
 
+/**
+ * Combine JSON files of the same type into one file using deepMerge
+ *
+ * @param base
+ * @param pluginsPath
+ * @param plugins
+ * @param fileName
+ * @param mergeOptions
+ * @returns
+ */
 export const mergeJSONFiles: MergerFn = (
   base = {},
   pluginsPath,
@@ -77,12 +94,12 @@ export const mergeJSONFiles: MergerFn = (
 }
 
 /**
+ * Combine all plugin meta.json data into one document
  *
  * @param base base dictionary of plugins
  * @param pluginsPath path to the plugin pack directory
  * @param plugins array of all selected plugins
  * @param fileName target file for the plugins
- * @returns all of the plugins' meta.js files combined into one dictionary object
  */
 export const mergePluginData: MergerFn = (
   base = {},
@@ -105,6 +122,13 @@ export const mergePluginData: MergerFn = (
   return baseFile
 }
 
+/**
+ * combine all .babelrc files together into one
+ *
+ * @param base base dictionary of plugins
+ * @param pluginsPath path to the plugin pack directory
+ * @param plugins array of all selected plugins
+ */
 export const mergeBabel: AsyncMergerFn = async (base, pluginsPath, plugins) => {
   const baseBabel = { ...base }
 
@@ -127,6 +151,14 @@ export const mergeBabel: AsyncMergerFn = async (base, pluginsPath, plugins) => {
   return merged
 }
 
+/**
+ * merge package.json and package.js files together
+ *
+ * @param base all of the data provided by the saoFile data function
+ * @param pluginsPath
+ * @param plugins
+ * @param answers
+ */
 export const mergePackages: PackageMergerFn = (
   base = {},
   pluginsPath,
