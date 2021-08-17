@@ -1,6 +1,6 @@
 {
-  "name": "perfect-boilerplate",
-  "version": "0.1.0",
+  "name": "supersaas-boilerplate",
+  "version": "0.0.1",
   "description": "The ultimate boilerplate cli for modern saas applications",
   "license": "MIT",
   "repository": {
@@ -9,6 +9,7 @@
   },
   "author": "Tim Crooker <timothycrooker@gmail.com>",
   "main": "index.tsx",
+  "bin": {"supersaas-boilerplate": "lib/index.js"},
   "scripts": {
     "dev:cli": "nodemon --watch src -e ts --ignore lib --exec npm run build:cli",
     "dev:global": "nodemon --watch src -e ts --ignore lib --exec \"npm run build:cli & npm run global\"",

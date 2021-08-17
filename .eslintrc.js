@@ -39,4 +39,4 @@ module.exports = {
     // change as necessary
     node: true,
   },
-};
+}
