@@ -1,6 +1,6 @@
 {
   "name": "supersaas-boilerplate",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "The ultimate boilerplate cli for modern saas applications",
   "license": "MIT",
   "repository": {
@@ -9,7 +9,7 @@
   },
   "author": "Tim Crooker <timothycrooker@gmail.com>",
   "homepage": "https://pankod.github.io/superplate/",
-  "bin": "./lib/index.js",
+  "bin": {"supersaas": "./lib/index.js"},
   "files": [
     "lib"
   ],
