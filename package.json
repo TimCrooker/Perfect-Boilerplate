@@ -16,7 +16,7 @@
   "scripts": {
     "dev:cli": "nodemon --watch src -e ts --ignore lib --exec npm run build:cli",
     "dev:global": "nodemon --watch src -e ts --ignore lib --exec \"npm run build:cli & npm run global\"",
-    "dev:ui": "yarn node ./lib test -d -s ../Perfect-Boilerplate-Plugins",
+    "dev:ui": "npm run build:cli && node ./lib test -d -s ../Perfect-Boilerplate-Plugins",
     "global": "npm i -g --quiet",
     "test:cov": "npm run lint && jest --coverage",
     "test": "npm run lint && jest",
