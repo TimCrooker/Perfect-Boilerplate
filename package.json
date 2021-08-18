@@ -23,7 +23,7 @@
     "lint": "eslint",
     "build": "npm run clean && tsc && babel src --out-dir lib --extensions \".ts,.js,.json\" --source-maps inline",
     "clean": "rm -rf ./lib",
-    "release": "release-it"
+    "release": "release-it GITHUB_TOKEN=-----BEGIN OPENSSH PRIVATE KEY-----b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZWQyNTUxOQAAACDlQ+1EDzbX6KlQc+SPz45YTMTOwTCv1v5c93/uO3iXWAAAAKAntBUoJ7QVKAAAAAtzc2gtZWQyNTUxOQAAACDlQ+1EDzbX6KlQc+SPz45YTMTOwTCv1v5c93/uO3iXWAAAAECIerhPex3vRLP0DcmdFHz1Lhc6kMNnyhuQVFpj+ibazOVD7UQPNtfoqVBz5I/PjlhMxM7BMK/W/lz3f+47eJdYAAAAGHRpbW90aHljcm9va2VyQGdtYWlsLmNvbQECAwQF-----END OPENSSH PRIVATE KEY-----"
   },
   "dependencies": {
     "@types/temp": "^0.9.1",
