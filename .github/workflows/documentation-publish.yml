@@ -48,7 +48,7 @@ jobs:
       - name: Release to GitHub Pages
         env:
           USE_SSH: true
-          GIT_USER: pankod-bot
+          GIT_USER: TimCrooker
         run: |
           cd documentation
           git config --global user.email "timothcrooker@gmail.com"
