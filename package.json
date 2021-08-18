@@ -10,7 +10,7 @@
   "author": "Tim Crooker <timothycrooker@gmail.com>",
   "homepage": "https://pankod.github.io/superplate/",
   "bin": {
-    "supersaas": "./lib/index.js"
+    "perfect-boilerplate": "./lib/index.js"
   },
   "files": [
     "lib"
