@@ -23,12 +23,9 @@ const cli = async (): Promise<void> => {
     .option('-d, --debug', 'run the program in debug mode')
     .parse(process.argv)
 
-  /**
-   * Check target project-directory exists
-   */
   const [projectDir] = program.args
 
-  // handle undefined project dir
+  // Check target project-directory exists
   if (projectDir === undefined) {
     console.error('No specified project directory')
     process.exit(1)
@@ -56,7 +53,7 @@ const cli = async (): Promise<void> => {
   const packTypes = []
 
   /**
-   * Verify validity and load plugin packs from supplied directory
+   * Verify plugin packs are valid and load them from supplied directory
    */
   if (sourcePath) {
     const pluginPacks = await FSHelper.ReadDir(sourcePath)
@@ -72,7 +69,7 @@ const cli = async (): Promise<void> => {
       process.exit(1)
     }
 
-    // create a list of all plugin packs and determine if they are valid
+    // Search the supplied directory for valid plugin Packs
     for (const pluginPack of pluginPacks) {
       const pluginDirPath = `${sourcePath}/${pluginPack}`
 
@@ -97,7 +94,7 @@ const cli = async (): Promise<void> => {
       // }
     }
 
-    // error when none of the supplied plugin packs are valid
+    // Handle when none of the supplied plugin packs are valid
     if (packTypes.length === 0) {
       console.log()
       console.error(
