@@ -2,9 +2,14 @@ name: documentation
 
 on:
   pull_request:
-    branches: [main]
+    branches: 
+      - master
   push:
-    branches: [main]
+    branches: 
+      - master
+    paths:
+      - 'docs/**'
+      - '.github/**'
 
 jobs:
   checks:
