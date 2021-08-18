@@ -1,7 +1,7 @@
 {
-  "name": "supersaas-boilerplate",
-  "version": "0.0.9",
-  "description": "The ultimate boilerplate cli for modern saas applications",
+  "name": "perfect-boilerplate",
+  "version": "0.0.1",
+  "description": "The ultimate boilerplate cli for modern applications",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -9,20 +9,20 @@
   },
   "author": "Tim Crooker <timothycrooker@gmail.com>",
   "homepage": "https://pankod.github.io/superplate/",
-  "bin": {"supersaas": "./lib/index.js"},
+  "bin": {
+    "supersaas": "./lib/index.js"
+  },
   "files": [
     "lib"
   ],
   "scripts": {
-    "dev:cli": "nodemon --watch src -e ts --ignore lib --exec npm run build:cli",
-    "dev:global": "nodemon --watch src -e ts --ignore lib --exec \"npm run build:cli & npm run global\"",
-    "dev:ui": "npm run build:cli && node ./lib test -d -s ../Perfect-Boilerplate-Plugins",
-    "global": "npm i -g --quiet",
+    "dev:cli": "nodemon --watch src -e ts --ignore lib --exec npm run build",
+    "dev:ui": "npm run build && node ./lib test -d -s ../Perfect-Boilerplate-Plugins",
     "test:cov": "npm run lint && jest --coverage",
     "test": "npm run lint && jest",
-    "build:cli": "npm run clean:cli && tsc && babel src --out-dir lib --extensions \".ts,.js,.json\" --source-maps inline",
-    "clean:cli": "rm -rf ./lib",
-    "lint": "eslint"
+    "lint": "eslint",
+    "build": "npm run clean:cli && tsc && babel src --out-dir lib --extensions \".ts,.js,.json\" --source-maps inline",
+    "clean": "rm -rf ./lib"
   },
   "dependencies": {
     "@types/temp": "^0.9.1",
@@ -64,6 +64,7 @@
     "jest": "^27.0.6",
     "lint-staged": "^11.1.2",
     "nodemon": "^2.0.12",
+    "np": "^7.5.0",
     "prettier": "^2.3.2",
     "ts-node": "^10.2.0",
     "ts-node-dev": "^1.1.8",
