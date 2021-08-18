@@ -5,7 +5,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula')
 module.exports = {
   title: 'My Site',
   tagline: 'Dinosaurs are cool',
-  url: 'https://botseaio.github.io/Perfect-Boilerplate/',
+  url: 'https://botseaio.github.io',
   baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
