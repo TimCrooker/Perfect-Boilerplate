@@ -61,11 +61,12 @@ const cli = async (): Promise<void> => {
   if (sourcePath) {
     const pluginPacks = await FSHelper.ReadDir(sourcePath)
 
-    // error when the plugin source contains no plugins
+    // error when the plugin source contains no plugin packs
     if (pluginPacks.length === 0) {
       console.log()
       console.error(
-        chalk.red('ERROR: ') + 'The plugin source directory has no plugins'
+        chalk.red('ERROR: ') +
+          'The supplied source directory has no plugin packs'
       )
       console.log()
       process.exit(1)
@@ -82,17 +83,18 @@ const cli = async (): Promise<void> => {
           title: pluginPack,
           value: pluginPack,
         })
-      } else {
-        console.error(
-          chalk.red('ERROR: ') +
-            'The plugin pack ' +
-            chalk.cyan(pluginPack) +
-            ' at the directory ' +
-            chalk.cyan(pluginDirPath) +
-            ' is invalid'
-        )
-        console.log()
       }
+      // else {
+      //   console.error(
+      //     chalk.red('ERROR: ') +
+      //       'The plugin pack ' +
+      //       chalk.cyan(pluginPack) +
+      //       ' at the directory ' +
+      //       chalk.cyan(pluginDirPath) +
+      //       ' is invalid'
+      //   )
+      //   console.log()
+      // }
     }
 
     // error when none of the supplied plugin packs are valid
