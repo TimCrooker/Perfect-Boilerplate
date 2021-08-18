@@ -51,7 +51,7 @@ jobs:
           GIT_USER: pankod-bot
         run: |
           cd documentation
-          git config --global user.email "bot@pankod.com"
-          git config --global user.name "pankod-bot"
+          git config --global user.email "timothcrooker@gmail.com"
+          git config --global user.name "TimCrooker"
           npm ci
           npm run deploy
