@@ -21,7 +21,7 @@
     "test:cov": "npm run lint && jest --coverage",
     "test": "npm run lint && jest",
     "lint": "eslint",
-    "build": "npm run clean:cli && tsc && babel src --out-dir lib --extensions \".ts,.js,.json\" --source-maps inline",
+    "build": "npm run clean && tsc && babel src --out-dir lib --extensions \".ts,.js,.json\" --source-maps inline",
     "clean": "rm -rf ./lib"
   },
   "dependencies": {
