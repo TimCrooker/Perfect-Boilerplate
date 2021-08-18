@@ -106,7 +106,7 @@ const cli = async (): Promise<void> => {
   }
 
   /**
-   * User selects plugin pack to use
+   * User selects app type to build
    */
 
   const { projectType } = await prompts({
