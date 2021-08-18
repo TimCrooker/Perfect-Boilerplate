@@ -5,7 +5,7 @@ on:
     branches:
       - master
     paths:
-      - 'documentation/**'
+      - 'docs/**'
       - '.github/**'
   pull_request:
     branches:
@@ -21,7 +21,7 @@ jobs:
           node-version: '12.x'
       - name: Test Build
         run: |
-          cd documentation
+          cd docs
           npm ci
           npm run build
   gh-release:
@@ -50,7 +50,7 @@ jobs:
           USE_SSH: true
           GIT_USER: TimCrooker
         run: |
-          cd documentation
+          cd docs
           git config --global user.email "timothcrooker@gmail.com"
           git config --global user.name "TimCrooker"
           npm ci
