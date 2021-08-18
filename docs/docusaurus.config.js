@@ -6,7 +6,7 @@ module.exports = {
   title: 'My Site',
   tagline: 'Dinosaurs are cool',
   url: 'https://botseaio.github.io',
-  baseUrl: '/',
+  baseUrl: '/Perfect-Boilerplate/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
