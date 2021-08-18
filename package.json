@@ -22,7 +22,8 @@
     "test": "npm run lint && jest",
     "lint": "eslint",
     "build": "npm run clean && tsc && babel src --out-dir lib --extensions \".ts,.js,.json\" --source-maps inline",
-    "clean": "rm -rf ./lib"
+    "clean": "rm -rf ./lib",
+		"release": "release-it"
   },
   "dependencies": {
     "@types/temp": "^0.9.1",
@@ -84,5 +85,13 @@
       "prettier --write",
       "git add"
     ]
-  }
+  },
+	"release-it": {
+		"git": {
+			"commitMessage": "chore: release v${version}"
+		},
+		"github": {
+			"release": true
+		}	
+	}
 }
