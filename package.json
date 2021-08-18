@@ -5,10 +5,10 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/TimCrooker/Perfect-Boilerplate"
+    "url": "https://github.com/BotSeaio/Perfect-Boilerplate"
   },
   "author": "Tim Crooker <timothycrooker@gmail.com>",
-  "homepage": "https://pankod.github.io/superplate/",
+  "homepage": "https://botseaio.github.io/Perfect-Boilerplate/",
   "bin": {
     "perfect-boilerplate": "./lib/index.js"
   },
