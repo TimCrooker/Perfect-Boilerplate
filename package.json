@@ -23,7 +23,7 @@
     "lint": "eslint",
     "build": "npm run clean && tsc && babel src --out-dir lib --extensions \".ts,.js,.json\" --source-maps inline",
     "clean": "rm -rf ./lib",
-    "release": "release-it --no-npm"
+    "release": "dotenv release-it --no-npm"
   },
   "dependencies": {
     "@types/temp": "^0.9.1",
@@ -31,7 +31,6 @@
     "chalk": "^4.1.2",
     "clear": "^0.1.0",
     "commander": "6.2.0",
-    "dotenv": "^10.0.0",
     "ora": "^5.4.1",
     "path": "^0.12.7",
     "promisify": "^0.0.3",
@@ -55,6 +54,7 @@
     "@typescript-eslint/parser": "^4.29.1",
     "babel-jest": "^27.0.6",
     "babel-plugin-module-resolver": "^4.1.0",
+    "dotenv-cli": "^4.0.0",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-config-standard": "^16.0.3",
