@@ -11,7 +11,7 @@ module.exports = {
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
   organizationName: 'botseaio', // Usually your GitHub org/user name.
-  projectName: 'perfect-boilerplate', // Usually your repo name.
+  projectName: 'Perfect-Boilerplate', // Usually your repo name.
   themeConfig: {
     navbar: {
       title: 'My Site',
