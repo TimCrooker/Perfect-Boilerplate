@@ -40,5 +40,5 @@ jobs:
           cd docs
           git config --global user.email "timothcrooker@gmail.com"
           git config --global user.name "TimCrooker"
-          npm ci
+          yarn ci
           npm run deploy
