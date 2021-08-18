@@ -5,12 +5,12 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula')
 module.exports = {
   title: 'My Site',
   tagline: 'Dinosaurs are cool',
-  url: 'https://TimCrooker.github.io',
+  url: 'https://botseaio.github.io/Perfect-Boilerplate/',
   baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
-  organizationName: 'TimCrooker', // Usually your GitHub org/user name.
+  organizationName: 'botseaio', // Usually your GitHub org/user name.
   projectName: 'perfect-boilerplate', // Usually your repo name.
   themeConfig: {
     navbar: {
