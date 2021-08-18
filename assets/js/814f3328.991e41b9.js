@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkdocumentation=self.webpackChunkdocumentation||[]).push([[535],{5641:function(e){e.exports=JSON.parse('{"title":"Recent posts","items":[{"title":"Welcome","permalink":"/Perfect-Boilerplate/blog/welcome"},{"title":"Hello","permalink":"/Perfect-Boilerplate/blog/hello-world"},{"title":"Hola","permalink":"/Perfect-Boilerplate/blog/hola"}]}')}}]);
