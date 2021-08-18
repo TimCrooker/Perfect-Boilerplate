@@ -23,7 +23,7 @@ export const getSource: GetSourceFn = async (source) => {
   sourceSpinner.start()
 
   const sourcePath =
-    source ?? 'https://github.com/TimCrooker/Perfect-Boilerplate-Plugins.git'
+    source ?? 'https://github.com/BotSeaio/Perfect-Boilerplate-Plugins.git'
 
   const PathExists = await FSHelper.PathExists(sourcePath)
   if (PathExists) {
