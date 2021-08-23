@@ -22,7 +22,7 @@
     "test": "npm run lint && jest",
     "lint": "eslint",
     "build": "npm run clean && tsc && babel src --out-dir lib --extensions \".ts,.js,.json\" --source-maps inline",
-    "clean": "rm -rf ./lib",
+    "clean": "rimraf ./lib",
     "release": "dotenv release-it --no-npm"
   },
   "dependencies": {
@@ -35,6 +35,7 @@
     "path": "^0.12.7",
     "promisify": "^0.0.3",
     "prompts": "^2.4.1",
+    "rimraf": "^3.0.2",
     "sao": "2.0.0-beta.1",
     "temp": "^0.9.4",
     "valid-url": "^1.0.9",
