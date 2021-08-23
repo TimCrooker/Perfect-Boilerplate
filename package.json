@@ -17,7 +17,7 @@
   ],
   "scripts": {
     "dev:cli": "nodemon --watch src -e ts --ignore lib --exec npm run build",
-    "dev:ui": "node ./lib test -d -s ../Perfect-Boilerplate-Plugins",
+    "dev:ui": "node ./lib ../test -s ../Perfect-Boilerplate-Plugins",
     "test:cov": "npm run lint && jest --coverage",
     "test": "npm run lint && jest",
     "lint": "eslint",

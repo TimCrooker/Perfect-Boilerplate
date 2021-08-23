@@ -25,6 +25,7 @@ const cli = async (): Promise<void> => {
 
   const [projectDir] = program.args
 
+  console.log(projectDir)
   // Check target project-directory exists
   if (projectDir === undefined) {
     console.error('No specified project directory')

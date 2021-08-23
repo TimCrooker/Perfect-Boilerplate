@@ -317,6 +317,7 @@ const saoConfig: GeneratorConfig = {
       sao.gitInit()
       await sao.npmInstall({
         npmClient: this.answers.pm,
+        installArgs: ['--silent'],
       })
     }
 
