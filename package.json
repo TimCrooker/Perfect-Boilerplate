@@ -17,10 +17,10 @@
   ],
   "scripts": {
     "dev:cli": "nodemon --watch src -e ts --ignore lib --exec npm run build",
-    "dev:ui": "node ./lib test",
+    "dev:ui": "node ./lib test -d",
     "test:cov": "npm run lint && jest --coverage",
     "test": "npm run lint && jest",
-    "lint": "eslint",
+    "lint": "eslint --fix",
     "build": "npm run clean && tsc && babel src --out-dir lib --extensions \".ts,.js,.json\" --source-maps inline",
     "clean": "rimraf ./lib",
     "release": "dotenv release-it --no-npm"

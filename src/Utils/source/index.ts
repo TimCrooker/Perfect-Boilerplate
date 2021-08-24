@@ -44,7 +44,7 @@ export const getSource: GetSourceFn = async (source) => {
       const cloneResponse = await GitHelper.CloneAndGetPath(sourcePath)
       if (cloneResponse) {
         sourceSpinner.succeed('Cloned remote source successfully.')
-        return { path: cloneResponse }
+        return { path: cloneResponse + '/src' }
       }
       sourceSpinner.fail('Could not retrieve source repository.')
       return { error: 'Could not retrieve source repository.' }
