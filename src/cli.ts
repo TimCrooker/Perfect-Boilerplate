@@ -1,4 +1,4 @@
-import { FSHelper, getSource } from '@Utils'
+import { FSHelper, getPackChoicesFromDir, getSource, runSao } from '@Utils'
 import commander from 'commander'
 import path from 'path'
 import prompts from 'prompts'
@@ -10,141 +10,187 @@ import currentProject from '../package.json'
 const generator = path.resolve(__dirname, './')
 
 const cli = async (): Promise<void> => {
-  /**
-   * Get target project-directory
-   */
-  const program = commander
-    .name(currentProject.name)
-    .version(currentProject.version)
-    .arguments('<project-directory>')
-    .usage(`${chalk.green('<project-directory>')} [options]`)
-    .description(currentProject.description)
-    .option('-s, --source <source-path>', 'specify a custom source of plugins')
-    .option('-d, --debug', 'run the program in debug mode')
-    .parse(process.argv)
+    /**
+     * Get target project-directory
+     */
+    const program = commander
+        .name(currentProject.name)
+        .version(currentProject.version)
+        .arguments('<project-directory>')
+        .usage(`${chalk.green('<project-directory>')} [options]`)
+        .description(currentProject.description)
+        .option(
+            '-s, --source <source-path>',
+            'specify a custom source of plugins'
+        )
+        .option('-d, --debug', 'run the program in debug mode')
+        .parse(process.argv)
 
-  const [projectDir] = program.args
+    const [projectDir] = program.args
 
-  console.log(projectDir)
-  // Check target project-directory exists
-  if (projectDir === undefined) {
-    console.error('No specified project directory')
-    process.exit(1)
-  }
-
-  /**
-   * Get the plugin source directory
-   */
-
-  const source = await getSource(program.source)
-
-  let { path: sourcePath } = source
-  const { error: sourceError } = source
-
-  // error when supplied source doesn't exist
-  if (sourceError) {
-    console.error(`${chalk.bold`${sourceError}`}`)
-    console.log('Source can be a remote git repository or a local path.')
-    console.log()
-    console.log('You provided:')
-    console.log(`${chalk.blueBright(program.source)}`)
-    process.exit(1)
-  }
-
-  const packTypes = []
-
-  /**
-   * Verify plugin packs are valid and load them from supplied directory
-   */
-  if (sourcePath) {
-    const pluginPacks = await FSHelper.ReadDir(sourcePath)
-
-    // error when the plugin source contains no plugin packs
-    if (pluginPacks.length === 0) {
-      console.log()
-      console.error(
-        chalk.red('ERROR: ') +
-          'The supplied source directory has no plugin packs'
-      )
-      console.log()
-      process.exit(1)
+    console.log(projectDir)
+    // Check target project-directory exists
+    if (projectDir === undefined) {
+        console.error('No specified project directory')
+        process.exit(1)
     }
 
-    // Search the supplied directory for valid plugin Packs
-    for (const pluginPack of pluginPacks) {
-      const pluginDirPath = `${sourcePath}/${pluginPack}`
+    /**
+     * Get the plugin source directory
+     */
 
-      const packIsValid = await FSHelper.ValidPluginPack(pluginDirPath)
+    const source = await getSource(program.source)
 
-      if (packIsValid) {
-        packTypes.push({
-          title: pluginPack,
-          value: pluginPack,
+    let { path: sourcePath } = source
+    const { error: sourceError } = source
+
+    // error when supplied source doesn't exist
+    if (sourceError) {
+        console.error(`${chalk.bold`${sourceError}`}`)
+        console.log('Source can be a remote git repository or a local path.')
+        console.log()
+        console.log('You provided:')
+        console.log(`${chalk.blueBright(program.source)}`)
+        process.exit(1)
+    }
+
+    /**
+     * Verify plugin packs are valid and load them from supplied directory
+     */
+
+    const packTypes = await getPackChoicesFromDir(sourcePath as string, true)
+
+    /**
+     * User selects app type to build
+     */
+
+    const { projectType } = await prompts({
+        type: 'select',
+        name: 'projectType',
+        message: 'Select your project type',
+        choices: packTypes,
+    })
+
+    sourcePath = `${sourcePath}/${projectType}`
+
+    /**
+     * Set up SAO heiarchy for CUSTOM stacks
+     */
+
+    const saoInstances: SAO[] = []
+
+    if (projectType === 'Custom') {
+        const stackChoices = await getPackChoicesFromDir(sourcePath, true)
+
+        const { projectStack } = await prompts({
+            type: 'select',
+            name: 'projectStack',
+            message: 'Select the levels of the stack',
+            choices: stackChoices,
         })
-      }
-      // else {
-      //   console.error(
-      //     chalk.red('ERROR: ') +
-      //       'The plugin pack ' +
-      //       chalk.cyan(pluginPack) +
-      //       ' at the directory ' +
-      //       chalk.cyan(pluginDirPath) +
-      //       ' is invalid'
-      //   )
-      //   console.log()
-      // }
+
+        let frontendOutDir = projectDir
+        let backendOutDir = projectDir
+
+        if (projectStack === 'fullstack') {
+            const fullstackSrcPath = `${sourcePath}/${projectStack}`
+            saoInstances.push(
+                new SAO({
+                    generator,
+                    outDir: projectDir,
+                    logLevel: program.debug ? 4 : 1,
+                    appName: projectDir,
+                    extras: {
+                        debug: !!program.debug,
+                        paths: {
+                            sourcePath: fullstackSrcPath,
+                        },
+                    },
+                } as Options)
+            )
+            frontendOutDir = `${projectDir}/client`
+            backendOutDir = `${projectDir}/server`
+        }
+        if (projectStack === 'frontend' || projectStack === 'fullstack') {
+            let frontendSrcPath = `${sourcePath}/frontend`
+            const frontendChoices = await getPackChoicesFromDir(frontendSrcPath)
+
+            const { frontendType } = await prompts({
+                type: 'select',
+                name: 'frontendType',
+                message: 'Select your front-end framework',
+                choices: frontendChoices,
+            })
+
+            frontendSrcPath = `${frontendSrcPath}/${frontendType}`
+
+            saoInstances.push(
+                new SAO({
+                    generator,
+                    outDir: frontendOutDir,
+                    logLevel: program.debug ? 4 : 1,
+                    appName: projectDir,
+                    extras: {
+                        debug: !!program.debug,
+                        paths: {
+                            sourcePath: frontendSrcPath,
+                        },
+                    },
+                } as Options)
+            )
+        }
+        if (projectStack === 'backend' || projectStack === 'fullstack') {
+            let backendSrcPath = `${sourcePath}/backend`
+            const backendChoices = await getPackChoicesFromDir(backendSrcPath)
+
+            const { backendType } = await prompts({
+                type: 'select',
+                name: 'backendType',
+                message: 'Select your back-end framework',
+                choices: backendChoices,
+            })
+
+            backendSrcPath = `${backendSrcPath}/${backendType}`
+
+            saoInstances.push(
+                new SAO({
+                    generator,
+                    outDir: backendOutDir,
+                    logLevel: program.debug ? 4 : 1,
+                    appName: projectDir,
+                    extras: {
+                        debug: !!program.debug,
+                        paths: {
+                            sourcePath: backendSrcPath,
+                        },
+                    },
+                } as Options)
+            )
+        }
+    } else {
+        saoInstances.push(
+            new SAO({
+                generator,
+                outDir: projectDir,
+                logLevel: program.debug ? 4 : 1,
+                appName: projectDir,
+                extras: {
+                    debug: !!program.debug,
+                    paths: {
+                        sourcePath,
+                    },
+                },
+            } as Options)
+        )
     }
 
-    // Handle when none of the supplied plugin packs are valid
-    if (packTypes.length === 0) {
-      console.log()
-      console.error(
-        chalk.red('ERROR: ') + 'NONE of the supplied plugin packs are valid'
-      )
-      console.log()
-      process.exit(1)
+    /**
+     * Run all SAO instances
+     */
+
+    for (const sao of saoInstances) {
+        await runSao(sao, program)
     }
-  }
-
-  /**
-   * User selects app type to build
-   */
-
-  const { projectType } = await prompts({
-    type: 'select',
-    name: 'projectType',
-    message: 'Select your project type',
-    choices: packTypes,
-  })
-
-  sourcePath = `${sourcePath}/${projectType}`
-
-  /**
-   * Create and run new SAO instance with above CLI details
-   */
-
-  const sao = new SAO({
-    generator,
-    outDir: projectDir,
-    logLevel: program.debug ? 4 : 1,
-    appName: projectDir,
-    extras: {
-      debug: !!program.debug,
-      paths: {
-        sourcePath,
-      },
-    },
-  } as Options)
-
-  await sao.run().catch((err) => {
-    console.log(`${program.name()} has encountered an error.`)
-    console.log()
-    console.log(`If you think this is caused by a bug. Please check out:`)
-    console.log(currentProject.author)
-    console.log()
-    console.error('ERROR', err)
-    process.exit(1)
-  })
 }
 
 export default cli
