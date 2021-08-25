@@ -92,7 +92,9 @@
   "release-it": {
     "git": {
       "commit": true,
-      "commitMessage": "chore: release v${version}"
+      "commitMessage": "chore: release v${version}",
+      "tag": true,
+      "push": true
     },
     "npm": {
       "publish": false
