@@ -23,7 +23,7 @@
     "lint": "eslint --fix",
     "build": "npm run clean && tsc && babel src --out-dir lib --extensions \".ts,.js,.json\" --source-maps inline",
     "clean": "rimraf ./lib",
-    "release": "dotenv release-it --no-npm"
+    "release": "dotenv release-it --only-version"
   },
   "dependencies": {
     "@types/temp": "^0.9.1",
