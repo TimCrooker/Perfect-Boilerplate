@@ -84,6 +84,7 @@ const saoConfig: GeneratorConfig = {
 
         const pluginAnswers = { ...sao.answers }
         delete pluginAnswers.name
+
         const selectedPlugins = getPluginsArray(pluginAnswers)
         const extendData = concatExtend(
             extendBase,

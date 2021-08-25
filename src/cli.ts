@@ -136,6 +136,9 @@ const cli = async (): Promise<void> => {
                             sourcePath: frontendSrcPath,
                         },
                     },
+                    answers: {
+                        name: 'Client',
+                    },
                 } as Options)
             )
         }
@@ -163,6 +166,9 @@ const cli = async (): Promise<void> => {
                         paths: {
                             sourcePath: backendSrcPath,
                         },
+                    },
+                    answers: {
+                        name: 'Server',
                     },
                 } as Options)
             )
