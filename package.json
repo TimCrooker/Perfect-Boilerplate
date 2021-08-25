@@ -1,6 +1,6 @@
 {
   "name": "perfect-boilerplate",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "The ultimate boilerplate cli for modern applications",
   "license": "MIT",
   "repository": {
@@ -91,13 +91,14 @@
   },
   "release-it": {
     "git": {
+        "commit": true,
         "commitMessage": "chore: release v${version}"
     },
     "npm": {
-        "publish": false
+      "publish": false
     },
     "github": {
-        "release": true
+      "release": true
     }
   }
 }
