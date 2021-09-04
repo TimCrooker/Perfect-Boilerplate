@@ -2,10 +2,10 @@ import { getPackChoicesFromDir, getSource, runSao } from '@Utils'
 import commander from 'commander'
 import path from 'path'
 import prompts from 'prompts'
-import { Options, SAO } from 'sao'
 import chalk from 'chalk'
 
 import currentProject from '../package.json'
+import { Options, SAO } from 'perfectsao'
 
 const generator = path.resolve(__dirname, './')
 
@@ -24,6 +24,10 @@ const cli = async (): Promise<void> => {
 			'specify a custom source of plugins'
 		)
 		.option('-d, --debug', 'run the program in debug mode')
+		.option(
+			'D --develop',
+			'run the program in plugin development mode with hot reloading'
+		)
 		.parse(process.argv)
 
 	const [projectDir] = program.args
@@ -55,7 +59,7 @@ const cli = async (): Promise<void> => {
 	}
 
 	/**
-	 * Verify plugin packs are valid and load them from supplied directory
+	 * Verify plugin packs are valid and load them from source
 	 */
 
 	const packTypes = await getPackChoicesFromDir(sourcePath as string, true)

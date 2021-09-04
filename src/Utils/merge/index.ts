@@ -3,12 +3,12 @@ import { readFile } from 'fs'
 import path from 'path'
 import { promisify } from 'util'
 import {
-  AsyncMergerFn,
-  MergerFn,
-  PackageMergerFn,
-  PkgFnType,
-  PkgType,
-  PluginData,
+	AsyncMergerFn,
+	MergerFn,
+	PackageMergerFn,
+	PkgFnType,
+	PkgType,
+	PluginData,
 } from './merge'
 
 /**
@@ -18,24 +18,25 @@ import {
  * @param fileName name of the file inside of a plugin to target
  * @returns the file being targeted in the specified plugin
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const getPluginFile: <ReturnType extends any>(
-  pluginPath: string,
-  pluginName: string,
-  fileName: string
+	pluginPath: string,
+	pluginName: string,
+	fileName: string
 ) => ReturnType | undefined = (pluginPath, pluginName, fileName) => {
-  try {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const pluginFile = require(path.join(
-      pluginPath,
-      'plugins',
-      pluginName,
-      fileName
-    ))
+	try {
+		// eslint-disable-next-line @typescript-eslint/no-var-requires
+		const pluginFile = require(path.join(
+			pluginPath,
+			'plugins',
+			pluginName,
+			fileName
+		))
 
-    return pluginFile
-  } catch (e) {
-    return undefined
-  }
+		return pluginFile
+	} catch (e) {
+		return undefined
+	}
 }
 
 /**
@@ -46,23 +47,23 @@ const getPluginFile: <ReturnType extends any>(
  * @param fileName name of the file inside of the plugin to target
  */
 const getStringFile = async (
-  pluginPath: string,
-  pluginName: string,
-  fileName: string
+	pluginPath: string,
+	pluginName: string,
+	fileName: string
 ) => {
-  try {
-    const str = await promisify(readFile)(
-      path.join(pluginPath, 'plugins', pluginName, fileName),
-      'utf8'
-    )
-    if (typeof str === 'string') {
-      return str
-    } else {
-      return '{}'
-    }
-  } catch (e) {
-    return '{}'
-  }
+	try {
+		const str = await promisify(readFile)(
+			path.join(pluginPath, 'plugins', pluginName, fileName),
+			'utf8'
+		)
+		if (typeof str === 'string') {
+			return str
+		} else {
+			return '{}'
+		}
+	} catch (e) {
+		return '{}'
+	}
 }
 
 /**
@@ -76,21 +77,21 @@ const getStringFile = async (
  * @returns
  */
 export const mergeJSONFiles: MergerFn = (
-  base = {},
-  pluginsPath,
-  plugins,
-  fileName,
-  mergeOptions
+	base = {},
+	pluginsPath,
+	plugins,
+	fileName,
+	mergeOptions
 ) => {
-  const baseFile = { ...base }
-  const pluginFiles = plugins.map((plugin) => {
-    const file = getPluginFile<PkgType>(pluginsPath, plugin, fileName)
-    return file ?? {}
-  })
-  return merge.all([baseFile, ...pluginFiles], mergeOptions) as Record<
-    string,
-    unknown
-  >
+	const baseFile = { ...base }
+	const pluginFiles = plugins.map((plugin) => {
+		const file = getPluginFile<PkgType>(pluginsPath, plugin, fileName)
+		return file ?? {}
+	})
+	return merge.all([baseFile, ...pluginFiles], mergeOptions) as Record<
+		string,
+		unknown
+	>
 }
 
 /**
@@ -102,24 +103,25 @@ export const mergeJSONFiles: MergerFn = (
  * @param fileName target file for the plugins
  */
 export const mergePluginData: MergerFn = (
-  base = {},
-  pluginsPath,
-  plugins,
-  fileName
+	base = {},
+	pluginsPath,
+	plugins,
+	fileName
 ) => {
-  const baseFile = { ...base }
-  baseFile.plugins = []
-  plugins.map((plugin) => {
-    if (['npm', 'yarn', 'react', 'nextjs', 'refine'].includes(plugin)) return
-    const file = getPluginFile<PkgType>(pluginsPath, plugin, fileName) ?? {}
+	const baseFile = { ...base }
+	baseFile.plugins = []
+	plugins.map((plugin) => {
+		if (['npm', 'yarn', 'react', 'nextjs', 'refine'].includes(plugin))
+			return
+		const file = getPluginFile<PkgType>(pluginsPath, plugin, fileName) ?? {}
 
-    ;(baseFile.plugins as PluginData[]).push({
-      name: (file.name as string) ?? plugin,
-      description: (file.description as string) ?? '',
-      url: (file.url as string) ?? '',
-    })
-  })
-  return baseFile
+		;(baseFile.plugins as PluginData[]).push({
+			name: (file.name as string) ?? plugin,
+			description: (file.description as string) ?? '',
+			url: (file.url as string) ?? '',
+		})
+	})
+	return baseFile
 }
 
 /**
@@ -130,25 +132,28 @@ export const mergePluginData: MergerFn = (
  * @param plugins array of all selected plugins
  */
 export const mergeBabel: AsyncMergerFn = async (base, pluginsPath, plugins) => {
-  const baseBabel = { ...base }
+	const baseBabel = { ...base }
 
-  const pluginRcs = await Promise.all(
-    plugins.map(async (plugin) => {
-      const str = await getStringFile(pluginsPath, plugin, '.babelrc')
-      const parsed = JSON.parse(str)
+	const pluginRcs = await Promise.all(
+		plugins.map(async (plugin) => {
+			const str = await getStringFile(pluginsPath, plugin, '.babelrc')
+			const parsed = JSON.parse(str)
 
-      return parsed ?? {}
-    })
-  )
+			return parsed ?? {}
+		})
+	)
 
-  const merged = merge.all([baseBabel, ...pluginRcs]) as Record<string, unknown>
+	const merged = merge.all([baseBabel, ...pluginRcs]) as Record<
+		string,
+		unknown
+	>
 
-  const uniquePresets: string[] = []
-  const presetsSet = new Set((merged.presets as string[]) ?? [])
-  presetsSet.forEach((el) => uniquePresets.push(el))
-  merged.presets = uniquePresets
+	const uniquePresets: string[] = []
+	const presetsSet = new Set((merged.presets as string[]) ?? [])
+	presetsSet.forEach((el) => uniquePresets.push(el))
+	merged.presets = uniquePresets
 
-  return merged
+	return merged
 }
 
 /**
@@ -160,32 +165,32 @@ export const mergeBabel: AsyncMergerFn = async (base, pluginsPath, plugins) => {
  * @param answers
  */
 export const mergePackages: PackageMergerFn = (
-  base = {},
-  pluginsPath,
-  plugins,
-  answers
+	base = {},
+	pluginsPath,
+	plugins,
+	answers
 ) => {
-  const basePkg = { ...base }
-  const pluginPkgs = plugins.map((plugin) => {
-    const pluginPkg = getPluginFile<PkgType>(
-      pluginsPath,
-      plugin,
-      'package.json'
-    )
-    const pluginPkgFn = getPluginFile<PkgFnType>(
-      pluginsPath,
-      plugin,
-      'package.js'
-    )
+	const basePkg = { ...base }
+	const pluginPkgs = plugins.map((plugin) => {
+		const pluginPkg = getPluginFile<PkgType>(
+			pluginsPath,
+			plugin,
+			'package.json'
+		)
+		const pluginPkgFn = getPluginFile<PkgFnType>(
+			pluginsPath,
+			plugin,
+			'package.js'
+		)
 
-    if (pluginPkgFn && pluginPkg) {
-      const fnPkg = pluginPkgFn.apply(pluginPkg, answers)
-      return fnPkg
-    } else if (pluginPkg) {
-      return pluginPkg
-    }
-    return {}
-  })
+		if (pluginPkgFn && pluginPkg) {
+			const fnPkg = pluginPkgFn.apply(pluginPkg, answers)
+			return fnPkg
+		} else if (pluginPkg) {
+			return pluginPkg
+		}
+		return {}
+	})
 
-  return merge.all([basePkg, ...pluginPkgs]) as Record<string, unknown>
+	return merge.all([basePkg, ...pluginPkgs]) as Record<string, unknown>
 }

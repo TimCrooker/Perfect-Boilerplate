@@ -6074,6 +6074,13 @@ path@^0.12.7:
     process "^0.11.1"
     util "^0.10.3"
 
+perfectsao@^2.0.0-beta.1:
+  version "2.0.0-beta.1"
+  resolved "https://registry.yarnpkg.com/perfectsao/-/perfectsao-2.0.0-beta.1.tgz#6101a74cbe58a172817aa7fe0caaa00a457da542"
+  integrity sha512-4PGDYkcZ0CVhHJuTaAOw+qdtOm/zNBId9dYI6r0oFnTwIAjCkm6PeOFVuRF3LZS8NDtmOoLzvUE8C0yUt0YNRA==
+  dependencies:
+    update-notifier "^4.1.0"
+
 picomatch@^2.0.4, picomatch@^2.2.1, picomatch@^2.2.3:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/picomatch/-/picomatch-2.3.0.tgz#f1f061de8f6a4bf022892e2d128234fb98302972"
@@ -6669,13 +6676,6 @@ safe-regex@^1.1.0:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/safer-buffer/-/safer-buffer-2.1.2.tgz#44fa161b0187b9549dd84bb91802f9bd8385cd6a"
   integrity sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==
-
-sao@2.0.0-beta.1:
-  version "2.0.0-beta.1"
-  resolved "https://registry.yarnpkg.com/sao/-/sao-2.0.0-beta.1.tgz#7c33629cb5c5eb3d1b3e68e68a335e31192dd7d7"
-  integrity sha512-p/yKdP8r3ZNSY9ak2qAo5JUnTAnlQeCpbh5DHbuHWQHNrQpDDNt6/4XANiC9I9xvxF+faxXScTDcrWHtyqDm4g==
-  dependencies:
-    update-notifier "^4.1.0"
 
 saxes@^5.0.1:
   version "5.0.1"
