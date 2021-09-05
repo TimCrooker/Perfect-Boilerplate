@@ -371,4 +371,4 @@ const saoConfig: GeneratorConfig = {
 	},
 }
 
-export default saoConfig
+module.exports = saoConfig
