@@ -25,14 +25,14 @@ const cli = async (): Promise<void> => {
 		)
 		.option('-d, --debug', 'run the program in debug mode')
 		.option(
-			'D --develop',
+			'-D --develop',
 			'run the program in plugin development mode with hot reloading'
 		)
 		.parse(process.argv)
 
 	const [projectDir] = program.args
 
-	console.log(projectDir)
+	console.log(program.develop)
 	// Check target project-directory exists
 	if (projectDir === undefined) {
 		console.error('No specified project directory')

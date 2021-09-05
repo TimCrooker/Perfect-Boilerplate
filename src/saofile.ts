@@ -128,13 +128,13 @@ const saoConfig: GeneratorConfig = {
 	 *
 	 * actions are objects containing a set of instructions on a single transformation pattern
 	 *
-	 * ADD:
+	 * ADD: Adds files to the destination path from the source path
 	 *
-	 * MOVE:
+	 * MOVE: Runs fs.rename or fs.copyFile to move a file from source path to destination path
 	 *
-	 * MODIFY:
+	 * MODIFY: Modifies the contents of a file
 	 *
-	 * REMOVE:
+	 * REMOVE: Deletes a file
 	 *
 	 * @returns array of action objects
 	 */
@@ -350,7 +350,7 @@ const saoConfig: GeneratorConfig = {
 				)
 				// commit
 				await promisify(exec)(
-					`git --git-dir="${sao.outDir}"/.git/ --work-tree="${sao.outDir}"/ commit -m "initial commit with superstack"`
+					`git --git-dir="${sao.outDir}"/.git/ --work-tree="${sao.outDir}"/ commit -m "initial commit with perfect-boilerplate"`
 				)
 				sao.logger.info('created an initial commit.')
 			} catch (_) {
@@ -371,4 +371,4 @@ const saoConfig: GeneratorConfig = {
 	},
 }
 
-module.exports = saoConfig
+export default saoConfig
