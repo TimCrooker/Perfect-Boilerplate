@@ -148,6 +148,13 @@ interface MoveAction {
 		[k: string]: string
 	}
 }
+interface CopyAction {
+	type: 'copy'
+	templateDir?: string
+	patterns: {
+		[k: string]: string
+	}
+}
 interface ModifyAction {
 	type: 'modify'
 	files: string | string[]
@@ -163,7 +170,12 @@ interface RemoveAction {
 		  }
 	when: boolean | string
 }
-declare type Action = AddAction | MoveAction | ModifyAction | RemoveAction
+declare type Action =
+	| AddAction
+	| MoveAction
+	| ModifyAction
+	| RemoveAction
+	| CopyAction
 interface GeneratorConfig {
 	/**
 	 * Generator description

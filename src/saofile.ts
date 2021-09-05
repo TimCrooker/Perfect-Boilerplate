@@ -170,7 +170,7 @@ const saoConfig: GeneratorConfig = {
 				},
 			},
 			{
-				type: 'copy',
+				type: 'move',
 				templateDir: path.join(sourcePath, 'template'),
 				patterns: {
 					gitignore: '.gitignore',

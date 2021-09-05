@@ -2,41 +2,45 @@ import { GitHelper } from './'
 import { promisify } from 'util'
 
 jest.mock('util', () => ({
-  promisify: jest.fn(() => {
-    throw new Error()
-  }),
+	promisify: jest.fn(() => {
+		throw new Error()
+	}),
 }))
 describe('Git Helper', () => {
-  it('not found git url IsRepoExist', async () => {
-    const isRepoExist = await GitHelper.RepoExists(
-      'http://github.com/alibaba/ciftligi'
-    )
+	it('not found git url IsRepoExist', async () => {
+		const isRepoExist = await GitHelper.RepoExists(
+			'http://github.com/alibaba/ciftligi'
+		)
 
-    expect(isRepoExist.error).toBe('Source repository not found.')
-  })
+		expect(isRepoExist.error).toBe('Source repository not found.')
+	})
 
-  it('not valid git url IsRepoExist', async () => {
-    const isRepoExist = await GitHelper.RepoExists('pankod')
+	it('not valid git url IsRepoExist', async () => {
+		const isRepoExist = await GitHelper.RepoExists('pankod')
 
-    expect(isRepoExist.error).toBe('Source path not valid')
-  })
+		expect(isRepoExist.error).toBe('Source path not valid')
+	})
 
-  it('valid git url CloneAndGetPath', async () => {
-    ;(promisify as any).mockImplementation(() =>
-      jest.fn().mockResolvedValue({ stdout: 'git@github.com:mock/url.git' })
-    )
+	it('valid git url CloneAndGetPath', async () => {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		;(promisify as any).mockImplementation(() =>
+			jest
+				.fn()
+				.mockResolvedValue({ stdout: 'git@github.com:mock/url.git' })
+		)
 
-    const cloneAndPath = await GitHelper.CloneAndGetPath(
-      'https://github.com/pankod/action-test'
-    )
+		const cloneAndPath = await GitHelper.CloneAndGetPath(
+			'https://github.com/pankod/action-test'
+		)
 
-    expect(cloneAndPath).not.toBeFalsy()
-  })
+		expect(cloneAndPath).not.toBeFalsy()
+	})
 
-  it('invalid git url CloneAndGetPath', async () => {
-    ;(promisify as any).mockImplementation(() => new Error())
-    await expect(
-      GitHelper.CloneAndGetPath('https://pankod.com')
-    ).rejects.toThrowError()
-  })
+	it('invalid git url CloneAndGetPath', async () => {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		;(promisify as any).mockImplementation(() => new Error())
+		await expect(
+			GitHelper.CloneAndGetPath('https://pankod.com')
+		).rejects.toThrowError()
+	})
 })
