@@ -1,16 +1,16 @@
 export {
-    mergePackages,
-    mergeJSONFiles,
-    mergeBabel,
-    mergePluginData,
+	mergePackages,
+	mergeJSONFiles,
+	mergeBabel,
+	mergePluginData,
 } from './merge'
 export {
-    extendBase,
-    getPluginsArray,
-    getExtend,
-    concatExtend,
-    handleIgnore,
-    getPackChoicesFromDir,
+	extendBase,
+	getPluginsArray,
+	getExtend,
+	concatExtend,
+	handleIgnore,
+	getChoicesFromDir,
 } from './plugin'
 export { getSource } from './source'
 export { UrlHelper } from './url'
@@ -19,3 +19,6 @@ export { FSHelper } from './files'
 export { tips } from './tips'
 export { BinaryHelper } from './binary'
 export { runSao } from './sao'
+export { watchDirectories } from './watch'
+export { logger } from './logger'
+export { spinner } from './spinner'

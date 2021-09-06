@@ -129,9 +129,9 @@ export const handleIgnore: IgnoreHandlerFn = (
 	return filters
 }
 
-export const getPackChoicesFromDir = async (
+export const getChoicesFromDir = async (
 	sourcePath: string,
-	skipValidation?: boolean
+	validatePluginPack = false
 ): Promise<{ title: string; value: string }[]> => {
 	const packTypes = []
 
@@ -142,7 +142,7 @@ export const getPackChoicesFromDir = async (
 		console.log()
 		console.error(
 			chalk.red('ERROR: ') +
-				'The supplied source directory has no plugin packs'
+				'The supplied source directory has no sub-directories'
 		)
 		console.log()
 		console.log(`You supplied: ${chalk.cyan(sourcePath)}`)
@@ -151,36 +151,33 @@ export const getPackChoicesFromDir = async (
 
 	// Search the supplied directory for valid plugin Packs
 	for (const pluginPack of pluginPacks) {
-		const pluginDirPath = `${sourcePath}/${pluginPack}`
-		const packIsValid = await FSHelper.ValidPluginPack(pluginDirPath)
+		const packPath = path.resolve(sourcePath, pluginPack)
 
-		if (packIsValid || skipValidation) {
+		if (validatePluginPack) {
+			const check = await FSHelper.ValidPluginPack(packPath)
+			if (check) {
+				packTypes.push({
+					title: pluginPack,
+					value: pluginPack,
+				})
+			}
+		} else {
 			packTypes.push({
 				title: pluginPack,
 				value: pluginPack,
 			})
-		} else {
-			console.error(
-				chalk.red('ERROR: ') +
-					'The plugin pack ' +
-					chalk.cyan(pluginPack) +
-					' at the directory ' +
-					chalk.cyan(pluginDirPath) +
-					' is invalid'
-			)
-			console.log()
 		}
 	}
 
 	// Handle when none of the supplied plugin packs are valid
-	if (packTypes.length === 0) {
-		console.log()
-		console.error(
-			chalk.red('ERROR: ') + 'NONE of the supplied plugin packs are valid'
-		)
-		console.log()
-		process.exit(1)
-	}
+	// if (packTypes.length === 0) {
+	// 	console.log()
+	// 	console.error(
+	// 		chalk.red('ERROR: ') + 'NONE of the supplied plugin packs are valid'
+	// 	)
+	// 	console.log()
+	// 	process.exit(1)
+	// }
 
 	return packTypes
 }
