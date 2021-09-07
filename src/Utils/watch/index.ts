@@ -3,6 +3,7 @@ import path from 'path'
 import fs from 'fs'
 import { FSHelper } from '@Utils'
 import chalk from 'chalk'
+import { Stack } from '../../stack'
 
 /**
  * watches supplied directories for changes and executes a function passing in the path to that file
@@ -12,7 +13,8 @@ import chalk from 'chalk'
 export const watchDirectories = async (
 	directories: string[],
 	watchSubdirectories = true,
-	onChange?: (trueDir: string) => void | ((trueDir: string) => Promise<void>)
+	onChange?: (trueDir: string) => Promise<void>,
+	context?: Stack
 ): Promise<void> => {
 	for (const directory of directories) {
 		// Get absolute system path
@@ -44,7 +46,8 @@ export const watchDirectories = async (
 
 					console.log(`${filename} file Changed`)
 
-					if (onChange) onChange(trueDir)
+					if (context) await context.rebuildPlugin(trueDir)
+					if (onChange) await onChange(trueDir)
 				}
 			}
 		)

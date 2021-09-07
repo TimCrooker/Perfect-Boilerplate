@@ -318,6 +318,7 @@ interface IPaths {
 	templateDir?: string
 }
 interface IExtras {
+	stack: unknown
 	debug: boolean
 	paths: IPaths
 	projectType?: string

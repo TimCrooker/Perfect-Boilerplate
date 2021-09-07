@@ -5,7 +5,14 @@ import path from 'path'
 import prompts from 'prompts'
 import { Stack, StackType } from './stack'
 import { PackageJson } from 'type-fest'
-import { DEBUG, DEV, LogLevel, LogMode, RUN } from '@Utils/logger'
+import {
+	DEBUG,
+	DEV,
+	LogLevel,
+	logLevelFromMode,
+	LogMode,
+	RUN,
+} from '@Utils/logger'
 import figlet from 'figlet'
 
 export interface Config {
@@ -42,11 +49,10 @@ export class Dev {
 			...config,
 			projectPath: path.resolve(config.projectDir || '.'),
 		}
-
-		logger.setOptions({
-			logLevel: config.logLevel,
-			logMode: this.mode,
-		})
+		;(this.config.logLevel = logLevelFromMode(this.mode) || 3),
+			logger.setOptions({
+				logLevel: this.config.logLevel,
+			})
 
 		logger.info(`Running in ${this.mode} mode!`)
 

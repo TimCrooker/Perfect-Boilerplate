@@ -10,7 +10,6 @@ export type LogMode = typeof DEV | typeof RUN | typeof DEBUG
 
 interface Options {
 	logLevel?: LogLevel
-	logMode?: LogMode
 	mock?: boolean
 }
 
@@ -48,9 +47,6 @@ export class Logger {
 
 	setOptions(options: Options): void {
 		Object.assign(this.options, options)
-		if (options.logMode) {
-			this.options.logLevel = logLevelFromMode(options.logMode)
-		}
 	}
 
 	log(...args: any[]): void {

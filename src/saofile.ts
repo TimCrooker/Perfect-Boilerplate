@@ -17,22 +17,20 @@ import {
 	tips,
 } from '@Utils'
 import { Action, GeneratorConfig } from '../@types/sao'
+import { Stack } from './stack'
 
 const saoConfig: GeneratorConfig = {
 	/**
 	 * Runs upon instantiation of the SAO generator
 	 */
 	prompts(sao) {
-		const {
-			appName,
-			extras: { paths },
-		} = sao.opts
+		const { appName } = sao.opts
+		const stack = sao.opts.extras.stack as Stack
+
+		const sourcePath = stack.sourcePath as string
 
 		// eslint-disable-next-line @typescript-eslint/no-var-requires
-		const sourcePrompts = require(path.resolve(
-			paths.sourcePath,
-			'prompt.js'
-		))
+		const sourcePrompts = require(path.resolve(sourcePath, 'prompt.js'))
 
 		return [
 			{
@@ -68,10 +66,11 @@ const saoConfig: GeneratorConfig = {
 	 * all functions that are run after this one will have access to "sao.data" which will contain all of this function's returns
 	 */
 	data(sao) {
+		const stack = sao.opts.extras.stack as Stack
+
 		/**
 		 * Package Manager
 		 */
-
 		sao.answers.pm = BinaryHelper.CanUseYarn() ? sao.answers.pm : 'npm'
 
 		const pmRun = sao.answers.pm === 'yarn' ? 'yarn' : 'npm run'
@@ -79,8 +78,7 @@ const saoConfig: GeneratorConfig = {
 		/**
 		 * Extend.js data
 		 */
-		const { sourcePath } = sao.opts.extras.paths
-		const { projectType } = sao.opts.extras
+		const sourcePath = stack.sourcePath as string
 
 		const pluginAnswers = { ...sao.answers }
 		delete pluginAnswers.name
@@ -93,6 +91,8 @@ const saoConfig: GeneratorConfig = {
 			sao.answers
 		)
 
+		const metaJSONPath = 'src/meta.json'
+
 		/**
 		 * Plugins meta data
 		 */
@@ -103,20 +103,16 @@ const saoConfig: GeneratorConfig = {
 			'meta.json'
 		).plugins
 
-		const metaJSONPath =
-			projectType === 'react' ? 'src/meta.json' : 'public/meta.json'
-
 		/**
 		 * Return
 		 */
 		return {
 			...sao.answers,
-			projectType,
+			metaJSONPath,
 			answers: sao.answers,
 			selectedPlugins,
 			pmRun,
 			pluginsData,
-			metaJSONPath,
 			...extendData,
 		}
 	},
@@ -139,6 +135,8 @@ const saoConfig: GeneratorConfig = {
 	 * @returns array of action objects
 	 */
 	async actions(sao) {
+		const stack = sao.opts.extras.stack as Stack
+
 		if (sao.answers.name.length === 0) {
 			const error = sao.createError('App name is required!')
 			throw error
@@ -158,7 +156,7 @@ const saoConfig: GeneratorConfig = {
 			process.exit(1)
 		}
 
-		const { sourcePath } = sao.opts.extras.paths
+		const sourcePath = stack.sourcePath as string
 
 		const actionsArray = [
 			{

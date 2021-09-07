@@ -1,4 +1,4 @@
-import { FSHelper, getChoicesFromDir } from '@Utils'
+import { FSHelper, getChoicesFromDir, watchDirectories } from '@Utils'
 import { logger, Logger } from '@Utils/logger'
 import { Config as DevConfig } from './dev'
 import path from 'path'
@@ -41,12 +41,16 @@ export class Stack {
 			)
 			process.exit(1)
 		}
-		this.sao.run().catch((err: Error) => {
+		await this.sao.run().catch((err: Error) => {
 			this.logger.log('We have encountered an error')
 			this.logger.log()
 			this.logger.error(err)
 			process.exit(1)
 		})
+
+		if (this.config.develop) {
+			await this.watchPlugins()
+		}
 	}
 
 	/** Gets the final path to the working directory from the user and validates it */
@@ -82,7 +86,7 @@ export class Stack {
 		this.logger.info(
 			'Looking for',
 			chalk.yellow(this.config.stackType),
-			' Frameworks'
+			'Frameworks'
 		)
 		const choices = await getChoicesFromDir(this.stackPath, true)
 
@@ -94,6 +98,34 @@ export class Stack {
 		})
 
 		this.framework = answer
+	}
+
+	async watchPlugins(): Promise<void> {
+		const pluginDirectories: string[] = this.sao?.data.selectedPlugins.map(
+			(plugin: string) => {
+				return path.resolve(
+					this.sourcePath as string,
+					'plugins',
+					plugin
+				)
+			}
+		)
+		pluginDirectories.push(
+			path.resolve(this.sourcePath as string, 'template')
+		)
+		await watchDirectories(pluginDirectories, true, undefined, this)
+	}
+
+	async rebuildPlugin(trueDir: string): Promise<void> {
+		logger.info('Detected changes to', chalk.cyan(trueDir))
+
+		if (this.sao) {
+			this.sao.opts = {
+				...this.sao.opts,
+				answers: this.sao?.answers,
+			}
+			await this.sao?.run()
+		}
 	}
 
 	/** Builds the generator for the stack  */
@@ -111,8 +143,8 @@ export class Stack {
 			logLevel: this.config.logLevel,
 			appName: this.config.projectDir,
 			extras: {
+				stack: this as Stack,
 				debug: true,
-				paths: { sourcePath: this.sourcePath },
 			},
 		} as Options)
 	}
