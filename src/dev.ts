@@ -32,6 +32,8 @@ export interface Config {
 	engineData: PackageJson
 	/** level of console logging to diplay to the user */
 	logLevel?: LogLevel
+	/** mode */
+	mode?: LogMode
 }
 
 export class Dev {
@@ -49,6 +51,8 @@ export class Dev {
 			...config,
 			projectPath: path.resolve(config.projectDir || '.'),
 		}
+
+		this.config.mode = this.mode
 		;(this.config.logLevel = logLevelFromMode(this.mode) || 3),
 			logger.setOptions({
 				logLevel: this.config.logLevel,

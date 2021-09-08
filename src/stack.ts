@@ -1,5 +1,5 @@
 import { FSHelper, getChoicesFromDir, tips, watchDirectories } from '@Utils'
-import { logger } from '@Utils/logger'
+import { logger, RUN } from '@Utils/logger'
 import { Config as DevConfig } from './dev'
 import path from 'path'
 import { Options, SAO } from 'perfectsao'
@@ -7,7 +7,6 @@ import prompts from 'prompts'
 import chalk from 'chalk'
 import { promisify } from 'util'
 import { exec } from 'child_process'
-import ora from 'ora'
 
 export type StackType = 'fullstack' | 'frontend' | 'backend'
 
@@ -36,6 +35,31 @@ export class Stack {
 		this.sourcePath = path.resolve(config.sourcePath, config.stackType)
 	}
 
+	/**
+	 * Generator building
+	 */
+	/** Builds the generator for the stack  */
+	async buildGenerator(): Promise<void> {
+		logger.info(
+			'Building',
+			chalk.yellow(this.config.stackType),
+			'generator'
+		)
+
+		await this.getActualSourcePath()
+
+		this.sao = new SAO({
+			generator: this.config.generator,
+			outDir: this.config.projectDir,
+			appName: this.config.projectDir,
+			logLevel: 1,
+			extras: {
+				stack: this as Stack,
+				debug: this.config.debug,
+			},
+		} as Options)
+	}
+	/** Run the current generator */
 	async runGenerator(): Promise<void> {
 		if (this.sao === undefined) {
 			logger.error('You cannot run a stack until you run buildGenerator')
@@ -57,6 +81,9 @@ export class Stack {
 		}
 	}
 
+	/**
+	 * Stack Type logic
+	 */
 	/** Gets the final path to the working directory from the user and validates it */
 	private async getActualSourcePath(): Promise<void> {
 		logger.info(
@@ -83,7 +110,6 @@ export class Stack {
 			)
 		}
 	}
-
 	/** Ask user to choose a framework */
 	private async getFramework(): Promise<void> {
 		logger.info(
@@ -103,21 +129,65 @@ export class Stack {
 		this.framework = answer
 	}
 
+	/**
+	 * Git Commands
+	 */
 	async gitInit(): Promise<void> {
 		if (this.sao) {
 			this.sao.gitInit()
 		}
 	}
-
-	async installPackages(): Promise<void> {
+	async gitCommit(): Promise<void> {
 		if (this.sao) {
-			await this.sao.npmInstall({
-				npmClient: this.sao.answers.pm,
-				// installArgs: ['--silent'],
-			})
+			try {
+				// add
+				await promisify(exec)(
+					`git --git-dir="${this.sao.outDir}"/.git/ --work-tree="${this.sao.outDir}"/ add -A`
+				)
+				// commit
+				await promisify(exec)(
+					`git --git-dir="${this.sao.outDir}"/.git/ --work-tree="${this.sao.outDir}"/ commit -m "initial commit with perfect-boilerplate"`
+				)
+				this.sao.logger.info('created an initial commit.')
+			} catch (_) {
+				console.log(
+					chalk.yellow`An error occured while creating git commit.`
+				)
+			}
 		}
 	}
 
+	/**
+	 *  Project Commands
+	 */
+	async installPackages(): Promise<void> {
+		if (this.sao) {
+			try {
+				await this.sao.npmInstall({
+					npmClient: this.sao.answers.pm,
+					installArgs: ['--silent'],
+				})
+			} catch {
+				logger.error('An error occured while installing dependencies')
+			}
+		}
+	}
+	async runProjectScript(scriptName: string): Promise<void> {
+		logger.info('Running project build in dev mode')
+
+		await promisify(exec)(
+			`npm --prefix ${this.sao?.outDir} run ${scriptName}`
+		)
+	}
+
+	/**
+	 * Tips
+	 */
+	preInstallTips(): void {
+		if (this.sao) {
+			tips.preInstall()
+		}
+	}
 	postInstallTips(): void {
 		if (this.sao) {
 			tips.postInstall({
@@ -128,15 +198,29 @@ export class Stack {
 		}
 	}
 
-	async runProjectScript(scriptName: string): Promise<void> {
-		logger.info('Running project build in dev mode')
-
-		await promisify(exec)(
-			`npm --prefix ${this.sao?.outDir} run ${scriptName}`
-		)
+	/** Generator Logic */
+	async prompts(): Promise<void> {
+		logger.log('Prompts not implimented')
+	}
+	async data(): Promise<void> {
+		logger.log('Prompts not implimented')
+	}
+	async actions(): Promise<void> {
+		logger.log('Prompts not implimented')
+	}
+	async prepare(): Promise<void> {
+		logger.log('prepare no workie')
+	}
+	async completed(): Promise<void> {
+		if (this.config.mode === RUN) {
+			await this.gitInit()
+		}
 	}
 
-	/** Watch for changes in the project source and trigger rebuilds when files change */
+	/**
+	 * Hot Reloading
+	 */
+	/** Watch plugin directories for changes */
 	private async watchPlugins(): Promise<void> {
 		const pluginDirectories: string[] = this.sao?.data.selectedPlugins.map(
 			(plugin: string) => {
@@ -154,8 +238,7 @@ export class Stack {
 
 		await watchDirectories(pluginDirectories, true, undefined, this)
 	}
-
-	/** Performs test project plugin rebuild when in DEV mode */
+	/** Rebuild project  */
 	async rebuildProject(trueDir: string): Promise<void> {
 		logger.info('Detected changes to file', chalk.cyan(trueDir))
 		if (this.sao) {
@@ -168,27 +251,5 @@ export class Stack {
 			await this.sao?.run()
 			logger.info('Watching for changes...')
 		}
-	}
-
-	/** Builds the generator for the stack  */
-	async buildGenerator(): Promise<void> {
-		logger.info(
-			'Building',
-			chalk.yellow(this.config.stackType),
-			'generator'
-		)
-
-		await this.getActualSourcePath()
-
-		this.sao = new SAO({
-			generator: this.config.generator,
-			outDir: this.config.projectDir,
-			appName: this.config.projectDir,
-			logLevel: 1,
-			extras: {
-				stack: this as Stack,
-				debug: this.config.debug,
-			},
-		} as Options)
 	}
 }

@@ -1,7 +1,4 @@
 import path from 'path'
-import { exec } from 'child_process'
-import { promisify } from 'util'
-import chalk from 'chalk'
 import validate from 'validate-npm-package-name'
 
 import {
@@ -319,33 +316,10 @@ const saoConfig: GeneratorConfig = {
 	 * Runs after actions are done being executed
 	 */
 	async completed(sao) {
-		const { debug } = sao.opts.extras
+		const stack = sao.opts.extras.stack as Stack
+
+		await stack.completed()
 		// await promisify(exec)(`npx prettier "${sao.outDir}" --write`)
-
-		/**
-		 * Create an initial commit
-		 */
-		// if (!debug) {
-		// 	try {
-		// 		// add
-		// 		await promisify(exec)(
-		// 			`git --git-dir="${sao.outDir}"/.git/ --work-tree="${sao.outDir}"/ add -A`
-		// 		)
-		// 		// commit
-		// 		await promisify(exec)(
-		// 			`git --git-dir="${sao.outDir}"/.git/ --work-tree="${sao.outDir}"/ commit -m "initial commit with perfect-boilerplate"`
-		// 		)
-		// 		sao.logger.info('created an initial commit.')
-		// 	} catch (_) {
-		// 		console.log(
-		// 			chalk.yellow`An error occured while creating git commit.`
-		// 		)
-		// 	}
-		// }
-
-		/**
-		 * Show messages after completion
-		 */
 	},
 }
 
