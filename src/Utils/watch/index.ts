@@ -42,10 +42,16 @@ export const watchDirectories = async (
 						fsWait = false
 					}, 500)
 
-					if (context) await context.rebuildProject(trueDir)
+					if (context) await context.rebuildProject()
 					if (onChange) await onChange(trueDir)
 
-					// logger.info(`${filename} file Changed`)
+					logger.info(
+						'File:',
+						chalk.yellow(filename),
+						'at',
+						chalk.cyan(trueDir),
+						'Changed'
+					)
 				}
 			}
 		)

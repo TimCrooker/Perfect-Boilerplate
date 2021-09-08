@@ -1,5 +1,5 @@
 import { FSHelper, getChoicesFromDir, tips, watchDirectories } from '@Utils'
-import { logger, RUN } from '@Utils/logger'
+import { DEBUG, DEV, logger, RUN } from '@Utils/logger'
 import { Config as DevConfig } from './dev'
 import path from 'path'
 import { Options, SAO } from 'perfectsao'
@@ -21,11 +21,10 @@ export class Stack {
 	config: Config
 	/** Generator instance that runs the stack build */
 	sao: SAO | undefined
-
-	/** Absolute path to the stack Directory */
+	/** Absolute working directory path */
 	sourcePath: string
-
-	framework?: string
+	/** Framework to use for a stack */
+	framework: string | undefined
 
 	constructor(config: Config) {
 		this.config = {
@@ -38,6 +37,7 @@ export class Stack {
 	/**
 	 * Generator building
 	 */
+
 	/** Builds the generator for the stack  */
 	async buildGenerator(): Promise<void> {
 		logger.info(
@@ -84,6 +84,7 @@ export class Stack {
 	/**
 	 * Stack Type logic
 	 */
+
 	/** Gets the final path to the working directory from the user and validates it */
 	private async getActualSourcePath(): Promise<void> {
 		logger.info(
@@ -130,13 +131,16 @@ export class Stack {
 	}
 
 	/**
-	 * Git Commands
+	 * Git management
 	 */
+
+	/** Initializes Git repo for project */
 	async gitInit(): Promise<void> {
 		if (this.sao) {
 			this.sao.gitInit()
 		}
 	}
+	/** Creates first git commit inside project git repo */
 	async gitCommit(): Promise<void> {
 		if (this.sao) {
 			try {
@@ -160,6 +164,8 @@ export class Stack {
 	/**
 	 *  Project Commands
 	 */
+
+	/** Install npm packages with selected package manager */
 	async installPackages(): Promise<void> {
 		if (this.sao) {
 			try {
@@ -172,6 +178,7 @@ export class Stack {
 			}
 		}
 	}
+	/** Run any script in the project's package.json */
 	async runProjectScript(scriptName: string): Promise<void> {
 		logger.info('Running project build in dev mode')
 
@@ -183,6 +190,7 @@ export class Stack {
 	/**
 	 * Tips
 	 */
+
 	preInstallTips(): void {
 		if (this.sao) {
 			tips.preInstall()
@@ -198,10 +206,10 @@ export class Stack {
 		}
 	}
 
-	/** Generator Logic */
-	async prompts(): Promise<void> {
-		logger.log('Prompts not implimented')
-	}
+	/**
+	 * Generator Logic
+	 */
+
 	async data(): Promise<void> {
 		logger.log('Prompts not implimented')
 	}
@@ -209,17 +217,28 @@ export class Stack {
 		logger.log('Prompts not implimented')
 	}
 	async prepare(): Promise<void> {
-		logger.log('prepare no workie')
+		this.preInstallTips()
 	}
 	async completed(): Promise<void> {
 		if (this.config.mode === RUN) {
 			await this.gitInit()
+			await this.installPackages()
+			this.postInstallTips()
+		}
+		if (this.config.mode === DEV) {
+			await this.installPackages()
+			this.runProjectScript('dev')
+			await this.watchPlugins()
+		}
+		if (this.config.mode === DEBUG) {
+			logger.info('debug mode')
 		}
 	}
 
 	/**
 	 * Hot Reloading
 	 */
+
 	/** Watch plugin directories for changes */
 	private async watchPlugins(): Promise<void> {
 		const pluginDirectories: string[] = this.sao?.data.selectedPlugins.map(
@@ -239,8 +258,7 @@ export class Stack {
 		await watchDirectories(pluginDirectories, true, undefined, this)
 	}
 	/** Rebuild project  */
-	async rebuildProject(trueDir: string): Promise<void> {
-		logger.info('Detected changes to file', chalk.cyan(trueDir))
+	async rebuildProject(): Promise<void> {
 		if (this.sao) {
 			logger.info('Rebuilding Project')
 			this.sao.opts = {
@@ -251,5 +269,17 @@ export class Stack {
 			await this.sao?.run()
 			logger.info('Watching for changes...')
 		}
+	}
+
+	/**
+	 * Getters / Setters
+	 */
+
+	get pmRun(): string | undefined {
+		if (this.sao) return this.sao.answers.pm === 'yarn' ? 'yarn' : 'npm run'
+	}
+
+	get pm(): string | undefined {
+		if (this.sao) return this.sao.answers.pm
 	}
 }

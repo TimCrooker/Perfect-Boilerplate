@@ -21,10 +21,11 @@ const saoConfig: GeneratorConfig = {
 	 * Returns an array of prompts to display to the user
 	 */
 	prompts(sao) {
-		const { appName } = sao.opts
 		const stack = sao.opts.extras.stack as Stack
 
-		const sourcePath = stack.sourcePath as string
+		const sourcePath = stack.sourcePath
+
+		const appName = stack.config.projectDir
 
 		// eslint-disable-next-line @typescript-eslint/no-var-requires
 		const sourcePrompts = require(path.resolve(sourcePath, 'prompt.js'))
@@ -68,14 +69,14 @@ const saoConfig: GeneratorConfig = {
 		/**
 		 * Package Manager
 		 */
-		sao.answers.pm = BinaryHelper.CanUseYarn() ? sao.answers.pm : 'npm'
+		sao.answers.pm = BinaryHelper.CanUseYarn() ? stack.pm : 'npm'
 
-		const pmRun = sao.answers.pm === 'yarn' ? 'yarn' : 'npm run'
+		const pmRun = stack.pmRun
 
 		/**
 		 * Extend.js data
 		 */
-		const sourcePath = stack.sourcePath as string
+		const sourcePath = stack.sourcePath
 
 		const pluginAnswers = { ...sao.answers }
 		delete pluginAnswers.name
