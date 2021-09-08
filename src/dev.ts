@@ -170,14 +170,11 @@ export class Dev {
 
 		const source = this.sourcePath as string
 
-		this.stack = new Stack(
-			{
-				...this.config,
-				stackType: this.stackType,
-				sourcePath: source,
-			},
-			logger
-		)
+		this.stack = new Stack({
+			...this.config,
+			stackType: this.stackType,
+			sourcePath: source,
+		})
 	}
 
 	get mode(): LogMode {

@@ -21,7 +21,7 @@ import { Stack } from './stack'
 
 const saoConfig: GeneratorConfig = {
 	/**
-	 * Runs upon instantiation of the SAO generator
+	 * Returns an array of prompts to display to the user
 	 */
 	prompts(sao) {
 		const { appName } = sao.opts
@@ -320,52 +320,32 @@ const saoConfig: GeneratorConfig = {
 	 */
 	async completed(sao) {
 		const { debug } = sao.opts.extras
-
-		/**
-		 * Git init and install packages
-		 */
-		if (!debug) {
-			sao.gitInit()
-			await sao.npmInstall({
-				npmClient: this.answers.pm,
-				installArgs: ['--silent'],
-			})
-		}
-
-		/**
-		 * Format generated project
-		 */
 		// await promisify(exec)(`npx prettier "${sao.outDir}" --write`)
 
 		/**
 		 * Create an initial commit
 		 */
-		if (!debug) {
-			try {
-				// add
-				await promisify(exec)(
-					`git --git-dir="${sao.outDir}"/.git/ --work-tree="${sao.outDir}"/ add -A`
-				)
-				// commit
-				await promisify(exec)(
-					`git --git-dir="${sao.outDir}"/.git/ --work-tree="${sao.outDir}"/ commit -m "initial commit with perfect-boilerplate"`
-				)
-				sao.logger.info('created an initial commit.')
-			} catch (_) {
-				console.log(
-					chalk.yellow`An error occured while creating git commit.`
-				)
-			}
-		}
+		// if (!debug) {
+		// 	try {
+		// 		// add
+		// 		await promisify(exec)(
+		// 			`git --git-dir="${sao.outDir}"/.git/ --work-tree="${sao.outDir}"/ add -A`
+		// 		)
+		// 		// commit
+		// 		await promisify(exec)(
+		// 			`git --git-dir="${sao.outDir}"/.git/ --work-tree="${sao.outDir}"/ commit -m "initial commit with perfect-boilerplate"`
+		// 		)
+		// 		sao.logger.info('created an initial commit.')
+		// 	} catch (_) {
+		// 		console.log(
+		// 			chalk.yellow`An error occured while creating git commit.`
+		// 		)
+		// 	}
+		// }
 
 		/**
 		 * Show messages after completion
 		 */
-		tips.postInstall({
-			name: sao.opts.appName ?? '',
-			dir: sao.outDir,
-			pm: sao.answers.pm,
-		})
 	},
 }
 

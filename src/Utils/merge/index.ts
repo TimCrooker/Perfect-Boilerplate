@@ -1,5 +1,5 @@
 import merge from 'deepmerge'
-import { readFile } from 'fs'
+import { readFile, readFileSync } from 'fs'
 import path from 'path'
 import { promisify } from 'util'
 import {
@@ -25,14 +25,11 @@ const getPluginFile: <ReturnType extends any>(
 	fileName: string
 ) => ReturnType | undefined = (pluginPath, pluginName, fileName) => {
 	try {
-		// eslint-disable-next-line @typescript-eslint/no-var-requires
-		const pluginFile = require(path.join(
-			pluginPath,
-			'plugins',
-			pluginName,
-			fileName
-		))
-
+		const rawData = readFileSync(
+			path.join(pluginPath, 'plugins', pluginName, fileName),
+			'utf8'
+		)
+		const pluginFile = JSON.parse(rawData)
 		return pluginFile
 	} catch (e) {
 		return undefined
@@ -157,7 +154,7 @@ export const mergeBabel: AsyncMergerFn = async (base, pluginsPath, plugins) => {
 }
 
 /**
- * merge package.json and package.js files together
+ * merge package.json and package.js files together into the final package.json
  *
  * @param base all of the data provided by the saoFile data function
  * @param pluginsPath
@@ -192,5 +189,10 @@ export const mergePackages: PackageMergerFn = (
 		return {}
 	})
 
-	return merge.all([basePkg, ...pluginPkgs]) as Record<string, unknown>
+	const result = merge.all([basePkg, ...pluginPkgs]) as Record<
+		string,
+		unknown
+	>
+
+	return result
 }

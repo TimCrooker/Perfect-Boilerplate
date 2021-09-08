@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import path from 'path'
 import fs from 'fs'
-import { FSHelper } from '@Utils'
+import { FSHelper, logger } from '@Utils'
 import chalk from 'chalk'
 import { Stack } from '../../stack'
 
@@ -23,15 +23,13 @@ export const watchDirectories = async (
 		//Check path exists
 		const checkDirPath = await FSHelper.PathExists(trueDir)
 		if (!checkDirPath) {
-			console.error(
-				`${chalk.red('ERROR: ')}the directory ${chalk.cyan(
-					directory
-				)} does not exist`
-			)
+			// logger.error(
+			// 	`the directory ${chalk.cyan(directory)} does not exist`
+			// )
 			continue
 		}
 
-		console.log(`Watching for file changes on ${trueDir}`)
+		// logger.info(`Watching for file changes on ${trueDir}`)
 
 		let fsWait: any = false
 		fs.watch(
@@ -42,12 +40,12 @@ export const watchDirectories = async (
 					if (fsWait) return
 					fsWait = setTimeout(() => {
 						fsWait = false
-					}, 100)
+					}, 500)
 
-					console.log(`${filename} file Changed`)
-
-					if (context) await context.rebuildPlugin(trueDir)
+					if (context) await context.rebuildProject(trueDir)
 					if (onChange) await onChange(trueDir)
+
+					// logger.info(`${filename} file Changed`)
 				}
 			}
 		)

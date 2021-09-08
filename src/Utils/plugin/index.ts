@@ -31,7 +31,6 @@ export const getPluginsArray: (answers: Record<string, Answer>) => string[] = (
 ) => {
 	return Object.entries(answers)
 		.reduce((acc: string[], [key, value]) => {
-			console.log(acc, key, value)
 			if (typeof value === 'boolean' && value) return [...acc, key]
 			if (typeof value === 'string') return [...(acc as string[]), value]
 			if (Array.isArray(value)) return [...(acc as string[]), ...value]
