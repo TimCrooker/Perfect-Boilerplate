@@ -1,3 +1,5 @@
 describe('Name of the group', () => {
-	expect(true).toBeTruthy()
+	it('hello', () => {
+		expect(true).toBeTruthy()
+	})
 })
