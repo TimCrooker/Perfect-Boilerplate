@@ -5,15 +5,9 @@ import path from 'path'
 import prompts from 'prompts'
 import { Stack, StackType } from './stack'
 import { PackageJson } from 'type-fest'
-import {
-	DEBUG,
-	DEV,
-	LogLevel,
-	logLevelFromMode,
-	LogMode,
-	RUN,
-} from '@Utils/logger'
+import { DEBUG, DEV, logLevelFromMode, RUN } from '@Utils/logger'
 import figlet from 'figlet'
+import { LogLevel, LogMode } from '@Utils/logger/logger'
 
 export interface Config {
 	/** Path to the saofile generator */

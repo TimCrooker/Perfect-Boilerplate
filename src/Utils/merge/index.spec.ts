@@ -13,8 +13,6 @@ describe('Package Helper', () => {
 			['plugin1', 'plugin2'],
 			'meta.json'
 		)
-
-		console.log(result)
 		expect(result).toBe(result)
 	})
 })

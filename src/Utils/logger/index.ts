@@ -1,17 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import chalk, { Color } from 'chalk'
-
-export type LogLevel = 1 | 2 | 3 | 4
+import { LogLevel, LogMode, Options } from './logger'
 
 export const DEV = 'dev'
 export const RUN = 'run'
 export const DEBUG = 'debug'
-export type LogMode = typeof DEV | typeof RUN | typeof DEBUG
-
-interface Options {
-	logLevel?: LogLevel
-	mock?: boolean
-}
 
 export const logLevelFromMode = (mode: LogMode): LogLevel => {
 	let logLevel: LogLevel = 1
