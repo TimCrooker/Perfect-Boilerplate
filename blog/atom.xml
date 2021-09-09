@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://botseaio.github.io/Perfect-Boilerplate/blog</id>
-    <title>My Site Blog</title>
+    <title>Botsea Blog</title>
     <updated>2019-05-30T00:00:00.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://botseaio.github.io/Perfect-Boilerplate/blog"/>
-    <subtitle>My Site Blog</subtitle>
-    <icon>https://botseaio.github.io/Perfect-Boilerplate/img/favicon.ico</icon>
+    <subtitle>Botsea Blog</subtitle>
+    <icon>https://botseaio.github.io/Perfect-Boilerplate/https://res.cloudinary.com/dfmg5c8l9/image/upload/v1631209481/botsea/branding/logo/icon</icon>
     <entry>
         <title type="html"><![CDATA[Welcome]]></title>
         <id>welcome</id>
