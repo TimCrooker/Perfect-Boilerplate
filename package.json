@@ -23,7 +23,11 @@
     "lint": "eslint --fix",
     "build": "npm run clean && tsc && babel src --out-dir lib --extensions \".ts,.js,.json\" --source-maps inline",
     "clean": "rimraf ./lib",
-    "release": "dotenv release-it --only-version"
+    "release": "dotenv release-it --only-version",
+	"docs:build": "npm --prefix ./docs run build",
+	"docs:dev": "npm --prefix ./docs run start",
+	"docs:deploy": "npm --prefix ./docs run depoloy",
+	"docs:docusaurus": "npm --prefix ./docs run docusaurus"
   },
   "dependencies": {
     "@types/md5": "^2.3.1",
