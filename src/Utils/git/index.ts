@@ -28,7 +28,7 @@ export const GitHelper = {
 			)
 			return tempInfo as string
 		} catch (e) {
-			throw Error(e)
+			throw Error(e as string)
 		}
 	},
 }
