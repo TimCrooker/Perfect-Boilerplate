@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkdocumentation=self.webpackChunkdocumentation||[]).push([[292],{2444:function(e){e.exports=JSON.parse('{"allTagsPath":"/Perfect-Boilerplate/blog/tags","slug":"docusaurus","name":"docusaurus","count":3,"permalink":"/Perfect-Boilerplate/blog/tags/docusaurus"}')}}]);

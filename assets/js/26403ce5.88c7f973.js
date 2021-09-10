@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkdocumentation=self.webpackChunkdocumentation||[]).push([[779],{271:function(e){e.exports=JSON.parse('{"allTagsPath":"/Perfect-Boilerplate/blog/tags","slug":"hola","name":"hola","count":1,"permalink":"/Perfect-Boilerplate/blog/tags/hola"}')}}]);
