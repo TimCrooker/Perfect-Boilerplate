@@ -164,4 +164,3 @@ export function LogoAnimation(): React.ReactElement {
 		</svg>
 	)
 }
-
