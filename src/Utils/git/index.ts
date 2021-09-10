@@ -10,9 +10,7 @@ export const GitHelper = {
 	): Promise<{ exists: boolean; error?: string }> => {
 		if (UrlHelper.IsUrl(path)) {
 			try {
-				await promisify(exec)(
-					`git ls-remote ${UrlHelper.GetGitUrl(path)}`
-				)
+				await promisify(exec)(`git ls-remote ${UrlHelper.GetGitUrl(path)}`)
 				return { exists: true }
 			} catch (e) {
 				return { exists: false, error: 'Source repository not found.' }

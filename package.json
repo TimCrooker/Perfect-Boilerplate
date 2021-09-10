@@ -24,10 +24,10 @@
     "build": "npm run clean && tsc && babel src --out-dir lib --extensions \".ts,.js,.json\" --source-maps inline",
     "clean": "rimraf ./lib",
     "release": "dotenv release-it --only-version",
-	"docs:build": "npm --prefix ./docs run build",
-	"docs:dev": "npm --prefix ./docs run start",
-	"docs:deploy": "npm --prefix ./docs run depoloy",
-	"docs:docusaurus": "npm --prefix ./docs run docusaurus"
+    "docs:build": "npm --prefix ./docs run build",
+    "docs:dev": "npm --prefix ./docs run start",
+    "docs:deploy": "npm --prefix ./docs run depoloy",
+    "docs:docusaurus": "npm --prefix ./docs run docusaurus"
   },
   "dependencies": {
     "@types/md5": "^2.3.1",
@@ -69,6 +69,7 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-config-standard": "^16.0.3",
     "eslint-plugin-import": "^2.24.0",
+    "eslint-plugin-json": "^3.1.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^3.4.0",
     "eslint-plugin-promise": "^5.1.0",
@@ -79,6 +80,9 @@
     "np": "^7.5.0",
     "prettier": "^2.3.2",
     "release-it": "^14.11.5",
+    "stylelint": "^13.13.1",
+    "stylelint-config-standard": "^22.0.0",
+    "stylelint-scss": "^3.20.1",
     "ts-node": "^10.2.0",
     "ts-node-dev": "^1.1.8",
     "type-fest": "^2.2.0",

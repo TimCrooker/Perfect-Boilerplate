@@ -160,9 +160,7 @@ export class Dev {
 
 	async createStack(): Promise<void> {
 		if (this.stackType === undefined) {
-			logger.error(
-				'trying to create new stack when stack type not selected'
-			)
+			logger.error('trying to create new stack when stack type not selected')
 			process.exit(1)
 		}
 

@@ -240,12 +240,7 @@ const saoConfig: GeneratorConfig = {
 			type: 'modify' as const,
 			files: sao.data.metaJSONPath,
 			handler(data: Record<string, unknown>) {
-				return mergePluginData(
-					data,
-					sourcePath,
-					selectedPlugins,
-					'meta.json'
-				)
+				return mergePluginData(data, sourcePath, selectedPlugins, 'meta.json')
 			},
 		})
 
@@ -256,12 +251,7 @@ const saoConfig: GeneratorConfig = {
 			type: 'modify' as const,
 			files: 'package.json',
 			handler(data: Record<string, unknown>) {
-				return mergePackages(
-					data,
-					sourcePath,
-					selectedPlugins,
-					sao.answers
-				)
+				return mergePackages(data, sourcePath, selectedPlugins, sao.answers)
 			},
 		})
 

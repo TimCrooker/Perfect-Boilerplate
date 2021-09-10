@@ -24,9 +24,7 @@ describe('Git Helper', () => {
 	it('valid git url CloneAndGetPath', async () => {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		;(promisify as any).mockImplementation(() =>
-			jest
-				.fn()
-				.mockResolvedValue({ stdout: 'git@github.com:mock/url.git' })
+			jest.fn().mockResolvedValue({ stdout: 'git@github.com:mock/url.git' })
 		)
 
 		const cloneAndPath = await GitHelper.CloneAndGetPath(

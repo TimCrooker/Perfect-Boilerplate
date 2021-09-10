@@ -40,11 +40,7 @@ export class Stack {
 
 	/** Builds the generator for the stack  */
 	async buildGenerator(): Promise<void> {
-		logger.info(
-			'Building',
-			chalk.yellow(this.config.stackType),
-			'generator'
-		)
+		logger.info('Building', chalk.yellow(this.config.stackType), 'generator')
 
 		await this.getActualSourcePath()
 
@@ -87,11 +83,7 @@ export class Stack {
 
 	/** Gets the final path to the working directory from the user and validates it */
 	private async getActualSourcePath(): Promise<void> {
-		logger.info(
-			'Checking if',
-			chalk.cyan(this.sourcePath),
-			'is plugin pack'
-		)
+		logger.info('Checking if', chalk.cyan(this.sourcePath), 'is plugin pack')
 
 		if (!(await FSHelper.ValidPluginPack(this.sourcePath))) {
 			logger.info(
@@ -154,9 +146,7 @@ export class Stack {
 				)
 				this.sao.logger.info('created an initial commit.')
 			} catch (_) {
-				console.log(
-					chalk.yellow`An error occured while creating git commit.`
-				)
+				console.log(chalk.yellow`An error occured while creating git commit.`)
 			}
 		}
 	}
@@ -182,9 +172,7 @@ export class Stack {
 	async runProjectScript(scriptName: string): Promise<void> {
 		logger.info('Running project build in dev mode')
 
-		await promisify(exec)(
-			`npm --prefix ${this.sao?.outDir} run ${scriptName}`
-		)
+		await promisify(exec)(`npm --prefix ${this.sao?.outDir} run ${scriptName}`)
 	}
 
 	/**
@@ -243,17 +231,11 @@ export class Stack {
 	private async watchPlugins(): Promise<void> {
 		const pluginDirectories: string[] = this.sao?.data.selectedPlugins.map(
 			(plugin: string) => {
-				return path.resolve(
-					this.sourcePath as string,
-					'plugins',
-					plugin
-				)
+				return path.resolve(this.sourcePath as string, 'plugins', plugin)
 			}
 		)
 
-		pluginDirectories.push(
-			path.resolve(this.sourcePath as string, 'template')
-		)
+		pluginDirectories.push(path.resolve(this.sourcePath as string, 'template'))
 
 		await watchDirectories(pluginDirectories, true, undefined, this)
 	}

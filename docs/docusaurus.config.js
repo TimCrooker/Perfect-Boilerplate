@@ -4,7 +4,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula')
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 module.exports = {
 	title: 'Botsea',
-	tagline: 'The ultimate boilerplate solution',
+	tagline: 'The fastest way to build web applications',
 	url: 'https://botseaio.github.io',
 	baseUrl: '/Perfect-Boilerplate/',
 	onBrokenLinks: 'throw',
@@ -15,19 +15,19 @@ module.exports = {
 	projectName: 'Perfect-Boilerplate', // Usually your repo name.
 	themeConfig: {
 		navbar: {
-			title: 'Botsea',
+			title: '',
 			logo: {
 				alt: 'My Site Logo',
-				src: 'https://res.cloudinary.com/dfmg5c8l9/image/upload/v1631209481/botsea/branding/logo/icon',
+				src: 'https://res.cloudinary.com/dfmg5c8l9/image/upload/v1631209481/botsea/branding/logo/full',
 			},
+			style: 'dark',
 			items: [
 				{
 					type: 'doc',
-					docId: 'intro',
-					position: 'left',
+					docId: 'getting-started',
+					position: 'right',
 					label: 'Docs',
 				},
-				{ to: '/blog', label: 'Blog', position: 'left' },
 				{
 					href: 'https://github.com/BotSeaio/Perfect-Boilerplate',
 					label: 'GitHub',
@@ -72,9 +72,16 @@ module.exports = {
 						'https://github.com/facebook/docusaurus/edit/master/website/blog/',
 				},
 				theme: {
-					customCss: require.resolve('./src/css/custom.css'),
+					customCss: [
+						require.resolve('./src/css/custom.css'),
+						require.resolve('./src/css/customTheme.scss'),
+						require.resolve('./src/css/index.scss'),
+						// require.resolve('./src/css/showcase.scss'),
+						// require.resolve('./src/css/versions.scss'),
+					],
 				},
 			},
 		],
 	],
+	plugins: ['docusaurus-plugin-sass'],
 }

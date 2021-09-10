@@ -108,8 +108,7 @@ export const mergePluginData: MergerFn = (
 	const baseFile = { ...base }
 	baseFile.plugins = []
 	plugins.map((plugin) => {
-		if (['npm', 'yarn', 'react', 'nextjs', 'refine'].includes(plugin))
-			return
+		if (['npm', 'yarn', 'react', 'nextjs', 'refine'].includes(plugin)) return
 		const file = getPluginFile<PkgType>(pluginsPath, plugin, fileName) ?? {}
 
 		;(baseFile.plugins as PluginData[]).push({
@@ -140,10 +139,7 @@ export const mergeBabel: AsyncMergerFn = async (base, pluginsPath, plugins) => {
 		})
 	)
 
-	const merged = merge.all([baseBabel, ...pluginRcs]) as Record<
-		string,
-		unknown
-	>
+	const merged = merge.all([baseBabel, ...pluginRcs]) as Record<string, unknown>
 
 	const uniquePresets: string[] = []
 	const presetsSet = new Set((merged.presets as string[]) ?? [])
@@ -189,10 +185,7 @@ export const mergePackages: PackageMergerFn = (
 		return {}
 	})
 
-	const result = merge.all([basePkg, ...pluginPkgs]) as Record<
-		string,
-		unknown
-	>
+	const result = merge.all([basePkg, ...pluginPkgs]) as Record<string, unknown>
 
 	return result
 }

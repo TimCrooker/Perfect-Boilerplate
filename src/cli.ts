@@ -16,10 +16,7 @@ const cli = async (): Promise<void> => {
 		.arguments('<project-directory>')
 		.usage(`${chalk.green('<project-directory>')} [options]`)
 		.description(currentProject.description)
-		.option(
-			'-s, --source <source-path>',
-			'specify a custom source of plugins'
-		)
+		.option('-s, --source <source-path>', 'specify a custom source of plugins')
 		.option('-d, --debug', 'run the program in debug mode')
 		.option(
 			'-D --develop',

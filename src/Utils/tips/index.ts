@@ -19,9 +19,7 @@ const postInstall: PostInstallFn = ({ name, dir, pm }) => {
 	console.log('')
 
 	console.log(
-		`${indent()}${chalk.blueBright(
-			pm === 'yarn' ? 'yarn dev' : 'npm run dev'
-		)}`
+		`${indent()}${chalk.blueBright(pm === 'yarn' ? 'yarn dev' : 'npm run dev')}`
 	)
 	console.log(`${indent(2)}Starts the development server.`)
 	console.log('')
@@ -42,9 +40,7 @@ const postInstall: PostInstallFn = ({ name, dir, pm }) => {
 	console.log('Start developing by typing:\n')
 	console.log(`${indent()}${chalk.blueBright('cd')} ${name}`)
 	console.log(
-		`${indent()}${chalk.blueBright(
-			pm === 'yarn' ? 'yarn dev' : 'npm run dev'
-		)}`
+		`${indent()}${chalk.blueBright(pm === 'yarn' ? 'yarn dev' : 'npm run dev')}`
 	)
 	console.log('')
 }
