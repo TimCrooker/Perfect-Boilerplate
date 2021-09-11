@@ -1,8 +1,11 @@
-.GetStarted {
+import styled from 'styled-components'
+import { Section } from '../../../components/core'
+
+export const GetStartedWrapper = styled(Section)`
 	color: white;
 
 	p: {
-		color:	white;
+		color: white;
 	}
 
 	.Heading {
@@ -44,7 +47,7 @@
 	}
 
 	.terminal::before {
-		content: "○ ○ ○";
+		content: '○ ○ ○';
 		color: gray;
 		font-size: 16px;
 		position: absolute;
@@ -61,7 +64,7 @@
 	}
 
 	code:first-child::before {
-		content: ">";
+		content: '>';
 		position: absolute;
 		left: -13px;
 		color: gray;
@@ -80,4 +83,4 @@
 			width: 100%;
 		}
 	}
-}
+`

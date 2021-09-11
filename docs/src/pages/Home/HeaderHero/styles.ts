@@ -1,6 +1,7 @@
-/* Header Hero */
+import styled from 'styled-components'
+import { Section } from '../../../components/core'
 
-.HeaderHero {
+export const HeaderHeroWrapper = styled(Section)`
 	padding-top: 20px;
 
 	.TwoColumns .column {
@@ -49,7 +50,7 @@
 		justify-content: center;
 	}
 
-	@media only screen and (min-width: 961px) {
+	@media only screen and (min-width: 997px) {
 		.TwoColumns {
 			grid-template-columns: 3fr 1fr;
 		}
@@ -63,7 +64,7 @@
 		}
 	}
 
-	@media only screen and (min-width: 481px) and (max-width: 960px) {
+	@media only screen and (min-width: 481px) and (max-width: 996px) {
 		.column.first {
 			display: flex;
 			justify-content: center;
@@ -87,4 +88,4 @@
 			margin-top: -2rem;
 		}
 	}
-}
+`

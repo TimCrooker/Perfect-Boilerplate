@@ -1,18 +1,18 @@
+import { Heading } from '@/components/core'
 import React from 'react'
-import { HomeCallToAction } from '../..'
-import { Section, Heading } from '../../../components/core'
-import './style.scss'
+import { HomeCallToAction } from '../components'
+import { GetStartedWrapper } from './style'
 
 function GetStarted(): React.ReactElement {
 	return (
-		<Section className="GetStarted" background="dark">
+		<GetStartedWrapper background="dark">
 			<div className="content">
 				<Heading text="Give it a try" />
 				<ol className="steps">
 					<li>
 						<p>Run this</p>
 						<div className="terminal">
-							<code>npx react-native init MyTestApp</code>
+							<code>npx perfect-boilerplate MyTestApp</code>
 						</div>
 					</li>
 					<li>
@@ -21,7 +21,7 @@ function GetStarted(): React.ReactElement {
 					</li>
 				</ol>
 			</div>
-		</Section>
+		</GetStartedWrapper>
 	)
 }
 

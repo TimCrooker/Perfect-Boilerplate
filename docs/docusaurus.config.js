@@ -1,5 +1,6 @@
 const lightCodeTheme = require('prism-react-renderer/themes/github')
 const darkCodeTheme = require('prism-react-renderer/themes/dracula')
+const path = require('path')
 
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 module.exports = {
@@ -83,5 +84,15 @@ module.exports = {
 			},
 		],
 	],
-	plugins: ['docusaurus-plugin-sass'],
+	plugins: [
+		'docusaurus-plugin-sass',
+		[
+			'docusaurus-plugin-module-alias',
+			{
+				alias: {
+					'@': path.resolve(__dirname, './src/'),
+				},
+			},
+		],
+	],
 }

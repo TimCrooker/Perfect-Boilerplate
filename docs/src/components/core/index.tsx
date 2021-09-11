@@ -1,5 +1,11 @@
 import React from 'react'
-import './core.scss'
+import { CloudinaryContext, Image } from 'cloudinary-react'
+import {
+	ActionButtonWrapper,
+	HeadingWrapper,
+	SectionWrapper,
+	TwoColumnsWrapper,
+} from './styles'
 
 interface SectionProps {
 	element?: string
@@ -8,20 +14,22 @@ interface SectionProps {
 	background?: string
 }
 export function Section({
-	element = 'section',
 	children,
 	className,
 	background = 'light',
 }: SectionProps): React.ReactElement {
-	const El = element
-	return <El className={`Section ${className} ${background}`}>{children}</El>
+	return (
+		<SectionWrapper className={`${className} ${background}`}>
+			{children}
+		</SectionWrapper>
+	)
 }
 
 interface HeadingProps {
 	text: string
 }
 export function Heading({ text }: HeadingProps): React.ReactElement {
-	return <h2 className="Heading">{text}</h2>
+	return <HeadingWrapper className="Heading">{text}</HeadingWrapper>
 }
 
 interface ActionButtonProps {
@@ -37,9 +45,9 @@ export function ActionButton({
 	children,
 }: ActionButtonProps): React.ReactElement {
 	return (
-		<a className={`ActionButton ${type}`} href={href} target={target}>
+		<ActionButtonWrapper className={type} href={href} target={target}>
 			{children}
-		</a>
+		</ActionButtonWrapper>
 	)
 }
 
@@ -73,14 +81,14 @@ export function TwoColumns({
 	reverse,
 }: TwoColumnsProps): React.ReactElement {
 	return (
-		<div className={`TwoColumns ${reverse ? 'reverse' : ''}`}>
+		<TwoColumnsWrapper className={reverse ? 'reverse' : ''}>
 			<div className={`column first ${reverse ? 'right' : 'left'}`}>
 				{columnOne}
 			</div>
 			<div className={`column last ${reverse ? 'left' : 'right'}`}>
 				{columnTwo}
 			</div>
-		</div>
+		</TwoColumnsWrapper>
 	)
 }
 
@@ -108,59 +116,22 @@ export function ScreenRect({
 	)
 }
 
-export function LogoAnimation(): React.ReactElement {
+interface SuperImageProps {
+	publicId?: string
+	imageUrl?: string
+	cloudName?: string
+}
+export function SuperImage({
+	publicId,
+	imageUrl,
+	cloudName,
+}: SuperImageProps): React.ReactElement {
 	return (
-		<svg
-			className="LogoAnimation init"
-			width={350}
-			height={350}
-			xmlns="http://www.w3.org/2000/svg"
-			viewBox="-200 -200 400 400"
-		>
-			<title>React Logo</title>
-			<clipPath id="screen">
-				<ScreenRect fill="none" stroke="gray" />
-			</clipPath>
-			<rect
-				x="-25"
-				y="120"
-				width="50"
-				height="25"
-				rx="2"
-				fill="white"
-				stroke="none"
-				className="stand"
-			/>
-			<polygon
-				points="-125,90 125,90 160,145 -160,145"
-				fill="white"
-				stroke="white"
-				strokeWidth="5"
-				strokeLinejoin="round"
-				className="base"
-			/>
-			<ScreenRect className="background" stroke="none" />
-			<g clipPath="url(#screen)" className="logo">
-				<g className="logoInner">
-					<circle cx="0" cy="0" r="30" fill="#61dafb" />
-					<g stroke="#61dafb" strokeWidth="15" fill="none" id="logo">
-						<ellipse rx="165" ry="64" />
-						<ellipse rx="165" ry="64" transform="rotate(60)" />
-						<ellipse rx="165" ry="64" transform="rotate(120)" />
-					</g>
-				</g>
-				<line
-					x1="-30"
-					x2="30"
-					y1="130"
-					y2="130"
-					stroke="white"
-					strokeWidth="8"
-					strokeLinecap="round"
-					className="speaker"
-				/>
-			</g>
-			<ScreenRect fill="none" stroke="white" />
-		</svg>
+		<>
+			<CloudinaryContext cloudName={cloudName ?? 'dfmg5c8l9'} secure="true">
+				{publicId && <Image publicId={publicId} className="image" />}
+				{imageUrl && <img src={imageUrl} className="image" />}
+			</CloudinaryContext>
+		</>
 	)
 }
