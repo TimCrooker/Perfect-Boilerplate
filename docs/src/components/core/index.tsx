@@ -9,7 +9,7 @@ import {
 
 interface SectionProps {
 	element?: string
-	children?: React.ReactElement
+	children?: React.ReactElement | React.ReactElement[]
 	className?: string
 	background?: string
 }
@@ -19,7 +19,7 @@ export function Section({
 	background = 'light',
 }: SectionProps): React.ReactElement {
 	return (
-		<SectionWrapper className={`${className} ${background}`}>
+		<SectionWrapper className={`section ${className} ${background}`}>
 			{children}
 		</SectionWrapper>
 	)
@@ -81,7 +81,7 @@ export function TwoColumns({
 	reverse,
 }: TwoColumnsProps): React.ReactElement {
 	return (
-		<TwoColumnsWrapper className={reverse ? 'reverse' : ''}>
+		<TwoColumnsWrapper className={`two-columns ${reverse ? 'reverse' : ''}`}>
 			<div className={`column first ${reverse ? 'right' : 'left'}`}>
 				{columnOne}
 			</div>
@@ -119,19 +119,30 @@ export function ScreenRect({
 interface SuperImageProps {
 	publicId?: string
 	imageUrl?: string
+	alt: string
 	cloudName?: string
+	style?: {}
 }
 export function SuperImage({
 	publicId,
 	imageUrl,
 	cloudName,
+	alt,
+	style = {},
 }: SuperImageProps): React.ReactElement {
 	return (
 		<>
-			<CloudinaryContext cloudName={cloudName ?? 'dfmg5c8l9'} secure="true">
-				{publicId && <Image publicId={publicId} className="image" />}
-				{imageUrl && <img src={imageUrl} className="image" />}
-			</CloudinaryContext>
+			{publicId && (
+				<Image
+					cloudName={cloudName ?? 'dfmg5c8l9'}
+					secure="true"
+					alt={alt}
+					publicId={publicId}
+					className="super-image"
+					style={style}
+				/>
+			)}
+			{imageUrl && <img alt={alt} src={imageUrl} className="super-image" />}
 		</>
 	)
 }

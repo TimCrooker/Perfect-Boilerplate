@@ -3,16 +3,23 @@ import styled from 'styled-components'
 export const ActionButtonWrapper = styled.a`
 	padding: 0.75rem 1.5rem;
 	text-align: center;
-	font-size: 1.25rem;
-	font-weight: 400;
+	font-size: 1.15rem;
+	font-weight: 500;
 	text-decoration: none !important;
 	border-bottom: none;
 	transition: all 0.2s ease-out;
 	max-width: 50%;
+	border-radius: 5px;
 
 	&.primary {
-		color: var(--dark);
-		background-color: var(--brand);
+		color: white;
+		background-color: var(--ifm-color-primary);
+
+		&::after {
+			content: '›';
+			font-size: 24px;
+			margin-left: 8px;
+		}
 
 		&:hover {
 			color: black;
@@ -21,14 +28,8 @@ export const ActionButtonWrapper = styled.a`
 	}
 
 	&.secondary {
-		background: none;
-		color: var(--brand);
-
-		&::after {
-			content: '›';
-			font-size: 24px;
-			margin-left: 5px;
-		}
+		background-color: var(--ifm-color-secondary);
+		color: black;
 
 		&:hover {
 			color: white;
@@ -50,6 +51,13 @@ export const SectionWrapper = styled.section`
 	padding-top: 50px;
 	padding-bottom: 50px;
 	overflow-x: hidden;
+	margin: 0 auto;
+
+	h1,
+	h2 {
+		font-size: 50px;
+		font-weight: 800;
+	}
 
 	&.Section {
 		border-top: 1px solid var(--ifm-table-border-color);
@@ -69,11 +77,12 @@ export const SectionWrapper = styled.section`
 
 	html[data-theme='dark'] p a {
 		@extend %link-style-dark;
-	}
+	}}
 `
 
 export const TwoColumnsWrapper = styled.div`
 	display: grid;
+	justify-content: center;
 
 	.column {
 		width: 100%;
@@ -88,7 +97,6 @@ export const TwoColumnsWrapper = styled.div`
 	}
 
 	@media only screen and (min-width: 961px) {
-		max-width: 900px;
 		margin: 0 auto;
 		grid-template-columns: repeat(2, 1fr);
 		grid-template-areas: 'first last';
@@ -98,8 +106,6 @@ export const TwoColumnsWrapper = styled.div`
 		}
 
 		.column {
-			max-width: 450px;
-
 			&.left {
 				padding-right: 50px;
 			}

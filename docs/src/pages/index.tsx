@@ -1,11 +1,10 @@
 import React from 'react'
 import Layout from '@theme/Layout'
-import HeaderHero from './Home/HeaderHero'
-import Plugins from './Home/Plugin'
-import GetStarted from './Home/GetStarted'
-import Frameworks from './Home/Frameworks'
-import BestPractices from './Home/BestPractices'
-import Databases from './Home/Databases'
+import '@/fonts/Axiforma/stylesheet.css'
+import HeaderHero from '@/components/Home/HeaderHero'
+import BestPractices from '@/components/Home/BestPractices'
+import BuildStack from '@/components/Home/BuildStack'
+import GetStarted from '@/components/Home/GetStarted'
 
 function HomeWrapper(): React.ReactElement {
 	return (
@@ -15,11 +14,9 @@ function HomeWrapper(): React.ReactElement {
 		>
 			<HeaderHero />
 			<main>
-				<Frameworks />
-				<Databases />
-				<Plugins />
-				<BestPractices />
-				<GetStarted />
+				<BuildStack />
+				{/* <BestPractices /> */}
+				{/* <GetStarted /> */}
 			</main>
 		</Layout>
 	)
