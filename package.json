@@ -16,8 +16,11 @@
     "lib"
   ],
   "scripts": {
-    "dev:cli": "nodemon --watch src -e ts --ignore lib --exec npm run build",
-    "dev:ui": "rimraf ./test && node ./lib test -D -s ../perfect-boilerplate-plugins/src",
+    "dev:build": "nodemon --watch src -e ts --ignore lib --exec npm run build",
+    "dev:plugins": "rimraf ./test && node ./lib test -D -s ../perfect-boilerplate-plugins",
+    "dev:debug:plugins": "rimraf ./test && node ./lib test -d -D -s ../perfect-boilerplate-plugins",
+    "dev:debug": "rimraf ./test && node ./lib test -d -s ../perfect-boilerplate-plugins",
+    "dev:start": "rimraf ./test && node ./lib test -s ../perfect-boilerplate-plugins",
     "test:cov": "npm run lint && jest --coverage",
     "test": "npm run lint && jest",
     "lint": "eslint --fix",
@@ -26,7 +29,7 @@
     "release": "dotenv release-it --only-version",
     "docs:build": "npm --prefix ./docs run build",
     "docs:dev": "npm --prefix ./docs run start",
-    "docs:deploy": "npm --prefix ./docs run depoloy",
+    "docs:deploy": "npm --prefix ./docs run deploy",
     "docs:docusaurus": "npm --prefix ./docs run docusaurus"
   },
   "dependencies": {
@@ -41,7 +44,7 @@
     "md5": "^2.3.0",
     "ora": "^5.4.1",
     "path": "^0.12.7",
-    "perfectsao": "^2.0.2-1",
+    "perfectsao": "^2.0.3",
     "promisify": "^0.0.3",
     "prompts": "^2.4.1",
     "rimraf": "^3.0.2",

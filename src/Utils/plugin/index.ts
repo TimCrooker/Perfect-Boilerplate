@@ -1,4 +1,4 @@
-import { FSHelper } from '@Utils'
+import { FSHelper, logger } from '@Utils'
 import chalk from 'chalk'
 import merge from 'deepmerge'
 import path from 'path'
@@ -128,55 +128,120 @@ export const handleIgnore: IgnoreHandlerFn = (
 	return filters
 }
 
-export const getChoicesFromDir = async (
-	sourcePath: string,
-	validatePluginPack = false
-): Promise<{ title: string; value: string }[]> => {
-	const packTypes = []
+/**
+ * Used to validate if a plugin pack is ready and usable
+ * @param basePath string path to the plugin pack directory
+ * @returns true or false if the plugin pack is valid
+ */
+export const isValidPluginPack = async (basePath: string): Promise<boolean> => {
+	const source = path.resolve(basePath)
 
-	const pluginPacks = await FSHelper.ReadDir(sourcePath)
+	// check that path exists
+	if (!(await FSHelper.PathExists(source))) return false
 
-	// error when the source directory contains no sub-directories
-	if (pluginPacks.length === 0) {
-		console.log()
-		console.error(
-			chalk.red('ERROR: ') +
-				'The supplied source directory has no sub-directories'
-		)
-		console.log()
-		console.log(`You supplied: ${chalk.cyan(sourcePath)}`)
-		process.exit(1)
+	// check for plugin.js file
+	const hasPromptFile = await FSHelper.PathExists(
+		path.resolve(source, 'prompt.js')
+	)
+	if (!hasPromptFile) return false
+
+	// check for template dir
+	const hasTemplateDir = await FSHelper.PathExists(
+		path.resolve(source, 'template')
+	)
+	if (!hasTemplateDir) return false
+
+	// check for plugins dir
+	// const hasPluginsDir = await FSHelper.PathExists(path + '/plugins')
+	// if (!hasPluginsDir) return false
+
+	return true
+}
+
+export const containsValidPluginPacks = async (
+	basePath: string
+): Promise<boolean> => {
+	const source = path.resolve(basePath)
+
+	// check that path exists
+	if (!(await FSHelper.PathExists(source))) return false
+
+	// get all base directory contents
+	const contents = await FSHelper.ReadDir(source)
+
+	if (contents.length === 0) return false
+	// loop through all contents and check if they are plugin packs
+	for (const item of contents) {
+		const itemPath = path.resolve(source, item)
+
+		// if there are any plugin packs then this is a valid directory
+		if (await isValidPluginPack(itemPath)) return true
 	}
 
-	// Search the supplied directory for valid plugin Packs
-	for (const pluginPack of pluginPacks) {
-		const packPath = path.resolve(sourcePath, pluginPack)
+	return false
+}
 
-		if (validatePluginPack) {
-			const check = await FSHelper.ValidPluginPack(packPath)
-			if (check) {
-				packTypes.push({
-					title: pluginPack,
-					value: pluginPack,
-				})
-			}
-		} else {
-			packTypes.push({
-				title: pluginPack,
-				value: pluginPack,
+/**
+ * Gets the names of the valid plugin packs in a directory
+ * @param basePath string path to the directory to find plugin packs
+ * @returns an array of strings that are the name of the valid plugin packs
+ */
+export const getValidPluginPacks = async (
+	basePath: string
+): Promise<string[]> => {
+	const source = path.resolve(basePath)
+
+	// check that path exists
+	if (!(await FSHelper.PathExists(source))) {
+		logger.error('Supplied directory', source, 'does not exist')
+		return []
+	}
+
+	// get all base directory contents
+	const contents = await FSHelper.ReadDir(source)
+
+	if (contents.length === 0) return []
+
+	const validPacks = []
+	// loop through all contents and check if they are plugin packs
+	for (const item of contents) {
+		const itemPath = path.resolve(source, item)
+		// if there are any plugin packs then this is a valid directory
+		if (await isValidPluginPack(itemPath)) validPacks.push(item)
+	}
+
+	return validPacks
+}
+
+export const getChoicesFromDir = async (
+	sourcePath: string,
+	onlyPluginPacks = false
+): Promise<{ title: string; value: string }[]> => {
+	const source = path.resolve(sourcePath)
+
+	if (onlyPluginPacks) {
+		return (await getValidPluginPacks(source)).map((packChoice) => ({
+			title: packChoice,
+			value: packChoice,
+		}))
+	}
+	const directory = await FSHelper.ReadDir(source)
+
+	const result = []
+	for (const choice of directory) {
+		if (await FSHelper.IsDirectory(path.resolve(source, choice))) {
+			result.push({
+				title: choice,
+				value: choice,
 			})
 		}
 	}
+	return result
+}
 
-	// Handle when none of the supplied plugin packs are valid
-	// if (packTypes.length === 0) {
-	// 	console.log()
-	// 	console.error(
-	// 		chalk.red('ERROR: ') + 'NONE of the supplied plugin packs are valid'
-	// 	)
-	// 	console.log()
-	// 	process.exit(1)
-	// }
-
-	return packTypes
+export const getPluginPath = (
+	packSourcePath: string,
+	pluginName: string
+): string => {
+	return path.resolve(packSourcePath, 'plugins', pluginName)
 }

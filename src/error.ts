@@ -1,5 +1,4 @@
-import { logger } from '../../Perfect-Boilerplate/src/Utils/logger'
-import { spinner } from './Utils/spinner'
+import { logger, spinner } from '@Utils'
 
 export class DevError extends Error {
 	sao: boolean

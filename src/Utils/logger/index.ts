@@ -1,24 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import chalk, { Color } from 'chalk'
-import { LogLevel, LogMode, Options } from './logger'
+import { LogLevel, Options } from './logger'
 
-export const DEV = 'dev'
-export const RUN = 'run'
-export const DEBUG = 'debug'
-
-export const logLevelFromMode = (mode: LogMode): LogLevel => {
+export const logLevelFromMode = (dev: boolean, debug: boolean): LogLevel => {
 	let logLevel: LogLevel = 1
-	switch (mode) {
-		case DEV:
-			logLevel = 4
-			break
-		case RUN:
-			logLevel = 1
-			break
-		case DEBUG:
-			logLevel = 3
-			break
-	}
+	if (dev) logLevel = 3
+	if (debug) logLevel = 4
 	return logLevel
 }
 
@@ -30,7 +17,6 @@ export class Logger {
 		this.options = Object.assign(
 			{
 				logLevel: 1,
-				logMode: RUN,
 				mock: false,
 			},
 			options
@@ -59,6 +45,26 @@ export class Logger {
 		this.status('magenta', 'debug', ...args)
 	}
 
+	// level: 3
+	success(...args: any[]): void {
+		this.status('green', 'success', ...args)
+	}
+
+	tip(...args: any[]): void {
+		this.status('blue', 'tip', ...args)
+	}
+
+	info(...args: any[]): void {
+		this.status('cyan', 'info', ...args)
+	}
+
+	status(color: typeof Color, label: string, ...args: any[]): void {
+		if (this.options.logLevel < 3) {
+			return
+		}
+		this.log(chalk[color](label), ...args)
+	}
+
 	// level: 2
 	warn(...args: any[]): void {
 		if (this.options.logLevel < 2) {
@@ -74,27 +80,6 @@ export class Logger {
 		}
 		process.exitCode = process.exitCode || 1
 		this.log(chalk.red('error'), ...args)
-	}
-
-	// level: 3
-	success(...args: any[]): void {
-		this.status('green', 'success', ...args)
-	}
-
-	// level: 3
-	tip(...args: any[]): void {
-		this.status('blue', 'tip', ...args)
-	}
-
-	info(...args: any[]): void {
-		this.status('cyan', 'info', ...args)
-	}
-
-	status(color: typeof Color, label: string, ...args: any[]): void {
-		if (this.options.logLevel < 3) {
-			return
-		}
-		this.log(chalk[color](label), ...args)
 	}
 }
 

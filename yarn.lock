@@ -6728,10 +6728,10 @@ path@^0.12.7:
     process "^0.11.1"
     util "^0.10.3"
 
-perfectsao@^2.0.2-1:
-  version "2.0.2-1"
-  resolved "https://registry.yarnpkg.com/perfectsao/-/perfectsao-2.0.2-1.tgz#a76f4aae6e401030a0a1bca77ac889e397ad5d76"
-  integrity sha512-eeo5J7YG+NtfNOKXg7wcUMkj9K5fiQoA6Rs7morXbIA9AQF3voefE3V76zJ9Qu9fP0geU7nPwZVSqseG5gNm6Q==
+perfectsao@^2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/perfectsao/-/perfectsao-2.0.3.tgz#e94c8e59bb748daa50a5b16d6dcb54cc60565246"
+  integrity sha512-fbAmcHRGZLQiIrAZEQe01DdA55KmRurehJPZ0CV6JC6fqsaiU8YCzTrfWbrBee9uGhnApn5mgA0vN29C/B25Pg==
   dependencies:
     update-notifier "^4.1.0"
 

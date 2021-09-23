@@ -11,7 +11,6 @@ import {
 	mergeJSONFiles,
 	mergePackages,
 	mergePluginData,
-	tips,
 } from '@Utils'
 import { Action, GeneratorConfig } from '../@types/sao'
 import { Stack } from './stack'
@@ -82,6 +81,7 @@ const saoConfig: GeneratorConfig = {
 		delete pluginAnswers.name
 
 		const selectedPlugins = getPluginsArray(pluginAnswers)
+
 		const extendData = concatExtend(
 			extendBase,
 			selectedPlugins,
@@ -299,8 +299,10 @@ const saoConfig: GeneratorConfig = {
 	/**
 	 * Runs before actions are executed
 	 */
-	async prepare() {
-		tips.preInstall()
+	async prepare(sao) {
+		const stack = sao.opts.extras.stack as Stack
+
+		await stack.prepare()
 	},
 
 	/**
@@ -310,7 +312,6 @@ const saoConfig: GeneratorConfig = {
 		const stack = sao.opts.extras.stack as Stack
 
 		await stack.completed()
-		// await promisify(exec)(`npx prettier "${sao.outDir}" --write`)
 	},
 }
 

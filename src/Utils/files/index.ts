@@ -1,5 +1,4 @@
-import { access, readdir } from 'fs'
-import path from 'path'
+import { access, lstat, lstatSync, readdir } from 'fs'
 import { promisify } from 'util'
 
 export const FSHelper = {
@@ -20,27 +19,34 @@ export const FSHelper = {
 		}
 	},
 
-	ValidPluginPack: async (basePath: string): Promise<boolean> => {
-		// check that path exists
-		const validPath = await FSHelper.PathExists(path.resolve(basePath))
-		if (!validPath) return false
+	IsFile: async (path: string): Promise<boolean> => {
+		try {
+			return (await promisify(lstat)(path)).isFile()
+		} catch (e) {
+			return false
+		}
+	},
 
-		// check for plugin.js file
-		const hasPromptFile = await FSHelper.PathExists(
-			path.resolve(basePath, 'prompt.js')
-		)
-		if (!hasPromptFile) return false
+	IsDirectory: async (path: string): Promise<boolean> => {
+		try {
+			return (await promisify(lstat)(path)).isDirectory()
+		} catch (e) {
+			return false
+		}
+	},
+	IsFileSync: (path: string): boolean => {
+		try {
+			return lstatSync(path).isFile()
+		} catch (e) {
+			return false
+		}
+	},
 
-		// check for template dir
-		const hasTemplateDir = await FSHelper.PathExists(
-			path.resolve(basePath, 'template')
-		)
-		if (!hasTemplateDir) return false
-
-		// check for plugins dir
-		// const hasPluginsDir = await FSHelper.PathExists(path + '/plugins')
-		// if (!hasPluginsDir) return false
-
-		return true
+	IsDirectorySync: (path: string): boolean => {
+		try {
+			return lstatSync(path).isDirectory()
+		} catch (e) {
+			return false
+		}
 	},
 }

@@ -1,6 +1,5 @@
 import { FSHelper } from './'
 import fs from 'fs'
-import path from 'path'
 
 const removeDir = function (path: string) {
 	if (fs.existsSync(path)) {
@@ -32,19 +31,5 @@ describe('FS Helper', () => {
 	it('incorrect path exists', async () => {
 		const PathExists = await FSHelper.PathExists('../pankod')
 		expect(PathExists).toBeFalsy()
-	})
-
-	const MockRootDir = path.resolve(__dirname, '__mocks__')
-
-	it('correctly formatted plugin pack', async () => {
-		const ValidPack = await FSHelper.ValidPluginPack(MockRootDir)
-
-		expect(ValidPack).toBeTruthy()
-	})
-
-	it('incorrectly formatted plugin pack', async () => {
-		const ValidPack = await FSHelper.ValidPluginPack('.')
-
-		expect(ValidPack).toBeFalsy()
 	})
 })

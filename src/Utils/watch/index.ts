@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import path from 'path'
 import fs from 'fs'
-import { FSHelper, logger } from '@Utils'
-import chalk from 'chalk'
-import { Stack } from '../../stack'
+import { FSHelper } from '@Utils'
+import { EventEmitter } from 'stream'
 
 /**
  * watches supplied directories for changes and executes a function passing in the path to that file
@@ -13,47 +12,26 @@ import { Stack } from '../../stack'
 export const watchDirectories = async (
 	directories: string[],
 	watchSubdirectories = true,
-	onChange?: (trueDir: string) => Promise<void>,
-	context?: Stack
+	e: EventEmitter
 ): Promise<void> => {
 	for (const directory of directories) {
 		// Get absolute system path
 		const trueDir = path.resolve(directory)
 
 		//Check path exists
-		const checkDirPath = await FSHelper.PathExists(trueDir)
-		if (!checkDirPath) {
-			// logger.error(
-			// 	`the directory ${chalk.cyan(directory)} does not exist`
-			// )
-			continue
-		}
-
-		// logger.info(`Watching for file changes on ${trueDir}`)
+		if (!(await FSHelper.PathExists(trueDir))) continue
 
 		let fsWait: any = false
-		fs.watch(
-			trueDir,
-			{ recursive: watchSubdirectories },
-			async (event, filename) => {
-				if (filename && event === 'change') {
-					if (fsWait) return
-					fsWait = setTimeout(() => {
-						fsWait = false
-					}, 500)
+		fs.watch(trueDir, { recursive: watchSubdirectories }, (event, filename) => {
+			// 500ms delay between change detections
+			if (filename && event === 'change') {
+				if (fsWait) return
+				fsWait = setTimeout(() => {
+					fsWait = false
+				}, 500)
 
-					if (context) await context.rebuildProject()
-					if (onChange) await onChange(trueDir)
-
-					logger.info(
-						'File:',
-						chalk.yellow(filename),
-						'at',
-						chalk.cyan(trueDir),
-						'Changed'
-					)
-				}
+				e.emit('Rebuild', trueDir, path.basename(filename))
 			}
-		)
+		})
 	}
 }

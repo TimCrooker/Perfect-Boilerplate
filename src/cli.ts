@@ -2,7 +2,8 @@ import commander from 'commander'
 import path from 'path'
 import chalk from 'chalk'
 import currentProject from '../package.json'
-import { Dev, Config as DevConfig } from './dev'
+import { Cli, Config as DevConfig } from './dev'
+import { Stack } from './stack'
 
 const generator = path.resolve(__dirname, './')
 
@@ -27,16 +28,20 @@ const cli = async (): Promise<void> => {
 	const [projectDir] = program.args
 	const { source, debug, develop } = program
 
-	const dev = new Dev({
+	const cli = new Cli({
 		generator,
 		projectDir,
 		sourceDir: source,
 		debug,
 		develop,
-		engineData: currentProject,
+		enginePackage: currentProject,
 	} as DevConfig)
 
-	await dev.runCLI()
+	await cli.run()
+
+	const stack = new Stack(cli.stackConfig)
+
+	stack.run()
 }
 
 export default cli
