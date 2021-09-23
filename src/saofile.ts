@@ -227,6 +227,7 @@ const saoConfig: GeneratorConfig = {
 			type: 'move' as const,
 			patterns: {
 				'_.eslintrc': '.eslintrc',
+				'_.eslintrc.js': '.eslintrc.js',
 			},
 			data() {
 				return sao.data
