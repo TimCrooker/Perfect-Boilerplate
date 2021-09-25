@@ -208,7 +208,7 @@ export class Stack {
 		}
 
 		// run rebuild in quiet mode
-		// this.sao.logger.options.logLevel = 1
+		this.sao.logger.options.logLevel = 1
 
 		// run the rebuild
 		await this.sao.run()
