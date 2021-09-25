@@ -1,14 +1,6 @@
-export interface ExtendType extends Record<string, unknown> {
-	_app: {
-		import: string[]
-		inner: string[]
-		wrapper: [string, string][]
-	}
-	_document: {
-		import: string[]
-		initialProps: string[]
-	}
-}
+import { extendBase } from '@Utils'
+
+export type ExtendType = typeof extendBase
 
 export type Answer = string | string[] | boolean | undefined
 

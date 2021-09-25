@@ -5,6 +5,11 @@ import { mkdir } from 'temp'
 import { UrlHelper } from '@Utils'
 
 export const GitHelper = {
+	/**
+	 *
+	 * @param path
+	 * @returns
+	 */
 	RepoExists: async (
 		path: string
 	): Promise<{ exists: boolean; error?: string }> => {
@@ -18,6 +23,11 @@ export const GitHelper = {
 		}
 		return { exists: false, error: 'Source path not valid' }
 	},
+	/**
+	 *
+	 * @param path
+	 * @returns
+	 */
 	CloneAndGetPath: async (path: string): Promise<string> => {
 		try {
 			const tempInfo = await promisify(mkdir)('')

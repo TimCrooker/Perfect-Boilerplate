@@ -5,6 +5,7 @@ import {
 	BinaryHelper,
 	concatExtend,
 	extendBase,
+	FSHelper,
 	getPluginsArray,
 	handleIgnore,
 	mergeBabel,
@@ -27,7 +28,9 @@ const saoConfig: GeneratorConfig = {
 		const appName = stack.config.projectDir
 
 		// eslint-disable-next-line @typescript-eslint/no-var-requires
-		const sourcePrompts = require(path.resolve(sourcePath, 'prompt.js'))
+		const sourcePrompts = FSHelper.requireUncached(
+			path.resolve(sourcePath, 'prompt.js')
+		)
 
 		return [
 			{
@@ -187,7 +190,9 @@ const saoConfig: GeneratorConfig = {
 		const selectedPlugins = getPluginsArray(pluginAnswers)
 
 		// eslint-disable-next-line @typescript-eslint/no-var-requires
-		const sourcePrompts = require(path.resolve(sourcePath, 'prompt.js'))
+		const sourcePrompts = FSHelper.requireUncached(
+			path.resolve(sourcePath, 'prompt.js')
+		)
 
 		/**
 		 *

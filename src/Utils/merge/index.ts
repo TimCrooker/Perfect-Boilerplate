@@ -1,15 +1,9 @@
+import { FSHelper } from '@Utils'
 import merge from 'deepmerge'
-import { readFile, readFileSync } from 'fs'
+import { readFile } from 'fs'
 import path from 'path'
 import { promisify } from 'util'
-import {
-	AsyncMergerFn,
-	MergerFn,
-	PackageMergerFn,
-	PkgFnType,
-	PkgType,
-	PluginData,
-} from './merge'
+import { AsyncMergerFn, MergerFn, PackageMergerFn, PluginData } from './merge'
 
 /**
  *
@@ -19,18 +13,17 @@ import {
  * @returns the file being targeted in the specified plugin
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const getPluginFile: <ReturnType extends any>(
+const getPluginFile = (
 	pluginPath: string,
 	pluginName: string,
 	fileName: string
-) => ReturnType | undefined = (pluginPath, pluginName, fileName) => {
+): any | undefined => {
 	try {
-		const rawData = readFileSync(
-			path.join(pluginPath, 'plugins', pluginName, fileName),
-			'utf8'
+		const rawData = FSHelper.requireUncached(
+			path.join(pluginPath, 'plugins', pluginName, fileName)
 		)
-		const pluginFile = JSON.parse(rawData)
-		return pluginFile
+		// const pluginFile = JSON.parse(rawData)
+		return rawData
 	} catch (e) {
 		return undefined
 	}
@@ -82,7 +75,7 @@ export const mergeJSONFiles: MergerFn = (
 ) => {
 	const baseFile = { ...base }
 	const pluginFiles = plugins.map((plugin) => {
-		const file = getPluginFile<PkgType>(pluginsPath, plugin, fileName)
+		const file = getPluginFile(pluginsPath, plugin, fileName)
 		return file ?? {}
 	})
 	return merge.all([baseFile, ...pluginFiles], mergeOptions) as Record<
@@ -109,7 +102,7 @@ export const mergePluginData: MergerFn = (
 	baseFile.plugins = []
 	plugins.map((plugin) => {
 		if (['npm', 'yarn', 'react', 'nextjs', 'refine'].includes(plugin)) return
-		const file = getPluginFile<PkgType>(pluginsPath, plugin, fileName) ?? {}
+		const file = getPluginFile(pluginsPath, plugin, fileName) ?? {}
 
 		;(baseFile.plugins as PluginData[]).push({
 			name: (file.name as string) ?? plugin,
@@ -153,9 +146,9 @@ export const mergeBabel: AsyncMergerFn = async (base, pluginsPath, plugins) => {
  * merge package.json and package.js files together into the final package.json
  *
  * @param base all of the data provided by the saoFile data function
- * @param pluginsPath
- * @param plugins
- * @param answers
+ * @param pluginsPath path to the directory containing the plugins
+ * @param plugins array of all selected plugins
+ * @param answers user provided answers from prompts
  */
 export const mergePackages: PackageMergerFn = (
 	base = {},
@@ -165,16 +158,8 @@ export const mergePackages: PackageMergerFn = (
 ) => {
 	const basePkg = { ...base }
 	const pluginPkgs = plugins.map((plugin) => {
-		const pluginPkg = getPluginFile<PkgType>(
-			pluginsPath,
-			plugin,
-			'package.json'
-		)
-		const pluginPkgFn = getPluginFile<PkgFnType>(
-			pluginsPath,
-			plugin,
-			'package.js'
-		)
+		const pluginPkg = getPluginFile(pluginsPath, plugin, 'package.json')
+		const pluginPkgFn = getPluginFile(pluginsPath, plugin, 'package.js')
 
 		if (pluginPkgFn && pluginPkg) {
 			const fnPkg = pluginPkgFn.apply(pluginPkg, answers)

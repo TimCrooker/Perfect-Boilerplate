@@ -49,4 +49,9 @@ export const FSHelper = {
 			return false
 		}
 	},
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	requireUncached: (module: any): any => {
+		delete require.cache[require.resolve(module)]
+		return require(module)
+	},
 }

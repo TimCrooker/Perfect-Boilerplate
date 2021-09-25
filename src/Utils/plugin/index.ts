@@ -1,13 +1,12 @@
 import { FSHelper, logger } from '@Utils'
-import chalk from 'chalk'
 import merge from 'deepmerge'
 import path from 'path'
-import { ExtendType, Answer, IgnoreHandlerFn, IgnoreType } from './plugin'
+import { Answer, ExtendType, IgnoreHandlerFn } from './plugin'
 
 /**
  * Base file structure to extend
  */
-export const extendBase: Required<ExtendType> = {
+export const extendBase = {
 	_app: {
 		import: [],
 		inner: [],
@@ -26,9 +25,7 @@ export const extendBase: Required<ExtendType> = {
  *
  * @returns an array of selected plugins
  */
-export const getPluginsArray: (answers: Record<string, Answer>) => string[] = (
-	answers
-) => {
+export const getPluginsArray = (answers: Record<string, Answer>): string[] => {
 	return Object.entries(answers)
 		.reduce((acc: string[], [key, value]) => {
 			if (typeof value === 'boolean' && value) return [...acc, key]
@@ -41,25 +38,21 @@ export const getPluginsArray: (answers: Record<string, Answer>) => string[] = (
 
 /**
  *
+ * Get the extend.js file if it exists, otherwise return undefined
+ *
  * @param pluginPath path to a plugin pack
  * @param pluginName name of the plugin from the pack to target
- * @returns object containing extend function that itself returns the extend object to merge with the template files
+ * @returns extend function which is provided answers and outputs basefile modifications
  */
-export const getExtend: (
+export const getExtend = (
 	pluginPath: string,
 	pluginName: string
-) => { extend: (answers: Record<string, Answer>) => ExtendType } | undefined = (
-	pluginPath,
-	pluginName
-) => {
+): { extend: (answers: Record<string, Answer>) => ExtendType } | undefined => {
 	try {
 		// eslint-disable-next-line @typescript-eslint/no-var-requires
-		const pluginExtend = require(path.join(
-			pluginPath,
-			'plugins',
-			pluginName,
-			'extend.js'
-		))
+		const pluginExtend = FSHelper.requireUncached(
+			path.join(pluginPath, 'plugins', pluginName, 'extend.js')
+		)
 
 		return pluginExtend
 	} catch (e) {
@@ -75,12 +68,12 @@ export const getExtend: (
  * @param answers [pluginName, answer] List of supplied user answers to all prompts
  * @returns the merged combination of the base file structure and the supplied extend.js file
  */
-export const concatExtend: (
+export const concatExtend = (
 	base: ExtendType,
 	plugins: string[],
 	sourcePath: string,
 	answers: Record<string, Answer>
-) => ExtendType = (base, plugins, sourcePath, answers) => {
+): ExtendType => {
 	// combines the extend.js file with the base file from the plugin pack template
 	const merged = merge.all<ExtendType>([
 		base,
@@ -104,11 +97,7 @@ export const concatExtend: (
  * @param plugin name of the current plugin to target
  * @returns
  */
-export const handleIgnore: IgnoreHandlerFn = (
-	ignores: IgnoreType[],
-	answers,
-	plugin
-) => {
+export const handleIgnore: IgnoreHandlerFn = (ignores, answers, plugin) => {
 	const filters: ReturnType<IgnoreHandlerFn> = {}
 
 	ignores.forEach((ignore) => {
@@ -158,6 +147,11 @@ export const isValidPluginPack = async (basePath: string): Promise<boolean> => {
 	return true
 }
 
+/**
+ *
+ * @param basePath
+ * @returns
+ */
 export const containsValidPluginPacks = async (
 	basePath: string
 ): Promise<boolean> => {
@@ -213,6 +207,12 @@ export const getValidPluginPacks = async (
 	return validPacks
 }
 
+/**
+ *
+ * @param sourcePath
+ * @param onlyPluginPacks
+ * @returns
+ */
 export const getChoicesFromDir = async (
 	sourcePath: string,
 	onlyPluginPacks = false
@@ -239,6 +239,12 @@ export const getChoicesFromDir = async (
 	return result
 }
 
+/**
+ *
+ * @param packSourcePath
+ * @param pluginName
+ * @returns
+ */
 export const getPluginPath = (
 	packSourcePath: string,
 	pluginName: string
