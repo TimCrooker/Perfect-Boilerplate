@@ -11,7 +11,7 @@ import { LogLevel } from '@Utils/logger/logger'
 import { containsValidPluginPacks, isValidPluginPack } from '@Utils/plugin'
 
 export interface Config {
-	/** Path to the saofile generator */
+	/** generator string */
 	generator: string
 	/** Name of directory being built to */
 	projectDir: string
@@ -27,7 +27,7 @@ export interface Config {
 	logLevel?: LogLevel
 }
 
-export class Cli {
+export class PerfectPlate {
 	config: Config
 	logger = logger
 	spinner = spinner

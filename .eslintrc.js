@@ -1,19 +1,23 @@
 module.exports = {
 	root: true,
 	parser: '@typescript-eslint/parser',
+	plugins: ['prettier', '@typescript-eslint'],
+	env: {
+		// change as necessary
+		node: true,
+	},
 	extends: [
-		'eslint:recommended',
 		'plugin:@typescript-eslint/eslint-recommended',
 		'plugin:@typescript-eslint/recommended',
 		'prettier',
 	],
 	parserOptions: {
-		ecmaVersion: 2015,
+		ecmaVersion: 2020,
 		sourceType: 'module',
 	},
-	plugins: ['prettier', '@typescript-eslint'],
 	rules: {
 		'no-var': ['error'],
+		'@typescript-eslint/no-explicit-any': 'off',
 		'prettier/prettier': [
 			'warn',
 			{
@@ -25,9 +29,5 @@ module.exports = {
 				useTabs: true,
 			},
 		],
-	},
-	env: {
-		// change as necessary
-		node: true,
 	},
 }

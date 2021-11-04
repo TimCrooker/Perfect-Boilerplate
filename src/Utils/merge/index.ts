@@ -32,18 +32,18 @@ const getPluginFile = (
 /**
  * Stringify the contents of a file inside of the plugin provided
  *
- * @param pluginPath path to the plugin pack directory
+ * @param pluginPackPath path to the plugin pack directory
  * @param pluginName name of the plugin to target
  * @param fileName name of the file inside of the plugin to target
  */
 const getStringFile = async (
-	pluginPath: string,
+	pluginPackPath: string,
 	pluginName: string,
 	fileName: string
 ) => {
 	try {
 		const str = await promisify(readFile)(
-			path.join(pluginPath, 'plugins', pluginName, fileName),
+			path.join(pluginPackPath, 'plugins', pluginName, fileName),
 			'utf8'
 		)
 		if (typeof str === 'string') {

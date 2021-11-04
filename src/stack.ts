@@ -1,11 +1,13 @@
-import { logger, tips, watchDirectories } from '@Utils'
+import { logger, watchDirectories } from '@Utils'
 import path from 'path'
 import chalk from 'chalk'
-import { promisify } from 'util'
-import { exec } from 'child_process'
 import EventEmitter from 'events'
-import { getPluginPath } from '@Utils/plugin'
-import { Options, SAO } from 'perfectsao'
+import { Grit } from 'grit-cli'
+
+interface Extras {
+	appName: string
+	stack: Stack
+}
 
 export interface StackConfig {
 	/** Path to the saofile generator */
@@ -25,7 +27,7 @@ export interface StackConfig {
 export class Stack {
 	config: StackConfig
 	/** Generator instance that runs the stack build */
-	sao!: SAO
+	grit!: Grit
 	/** Absolute path to the plugin pack source directory */
 	sourcePath: string
 
@@ -41,7 +43,7 @@ export class Stack {
 	async run(): Promise<void> {
 		await this.build()
 
-		await this.sao.run().catch((err: Error) => {
+		await this.grit.run().catch((err: Error) => {
 			logger.log('We have encountered an error')
 			logger.log()
 			logger.error(err)
@@ -59,104 +61,16 @@ export class Stack {
 	private async build(): Promise<void> {
 		logger.info('Building generator')
 
-		this.sao = new SAO({
+		this.grit = new Grit({
 			generator: this.config.generator,
 			outDir: this.config.projectDir,
-			appName: this.config.projectDir,
 			logLevel: this.config.logLevel,
 			// answers: { features: ['env'] },
 			extras: {
 				stack: this as Stack,
+				appName: this.config.projectDir,
 			},
-		} as Options)
-	}
-
-	/**
-	 * Git management
-	 */
-
-	/** Initializes Git repo for project */
-	private async gitInit(): Promise<void> {
-		if (this.sao) {
-			this.sao.gitInit()
-		}
-	}
-	/** Creates first git commit inside project git repo */
-	private async gitCommit(): Promise<void> {
-		if (this.sao) {
-			try {
-				// add
-				await promisify(exec)(
-					`git --git-dir="${this.sao.outDir}"/.git/ --work-tree="${this.sao.outDir}"/ add -A`
-				)
-				// commit
-				await promisify(exec)(
-					`git --git-dir="${this.sao.outDir}"/.git/ --work-tree="${this.sao.outDir}"/ commit -m "initial commit with perfect-boilerplate"`
-				)
-				logger.info('created an initial commit.')
-			} catch (err) {
-				logger.error('An error occured while creating git commit', err)
-			}
-		}
-	}
-
-	/**
-	 *  Project Commands
-	 */
-
-	/** Install npm packages with selected package manager */
-	private async installPackages(): Promise<void> {
-		try {
-			await this.sao.npmInstall({
-				npmClient: this.sao.answers.pm,
-				installArgs: ['--silent'],
-			})
-		} catch {
-			logger.error('An error occured while installing dependencies')
-		}
-	}
-	/** Run any script in the project's package.json */
-	private async runProjectScript(scriptName: string): Promise<void> {
-		logger.info('Running project build in dev mode')
-
-		await promisify(exec)(`npm --prefix ${this.sao?.outDir} run ${scriptName}`)
-	}
-
-	/**
-	 * Tips
-	 */
-
-	private preInstallTips(): void {
-		tips.preInstall()
-	}
-	private postInstallTips(): void {
-		tips.postInstall({
-			name: this.sao.opts.appName ?? '',
-			dir: this.sao.outDir,
-			pm: this.sao.answers.pm,
-		})
-	}
-
-	/**
-	 * Generator Logic
-	 */
-
-	async data(): Promise<void> {
-		logger.log('Not implimented')
-	}
-	async actions(): Promise<void> {
-		logger.log('Not implimented')
-	}
-	async prepare(): Promise<void> {
-		this.preInstallTips()
-	}
-	async completed(): Promise<void> {
-		// !this.debug && !this.develop && (await this.gitInit())
-		// !this.debug && (await this.installPackages())
-		// !this.develop && this.postInstallTips()
-		// run dev server for built project
-		// !this.debug && !this.develop && this.runProjectScript('dev')
-		// this.develop && (await this.watchPlugins())
+		} as Options<Extras>)
 	}
 
 	/**
@@ -202,16 +116,16 @@ export class Stack {
 			'plugin, now rebuilding'
 		)
 		// update generator options with previous run's answers
-		this.sao.opts = {
-			...this.sao.opts,
-			answers: { ...this.sao.answers },
+		this.grit.opts = {
+			...this.grit.opts,
+			answers: { ...this.grit.answers },
 		}
 
 		// run rebuild in quiet mode
-		this.sao.logger.options.logLevel = 1
+		this.grit.logger.options.logLevel = 1
 
 		// run the rebuild
-		await this.sao.run()
+		await this.grit.run()
 
 		!this.debug &&
 			['package.json', '_package.json'].includes(filename) &&
@@ -221,30 +135,4 @@ export class Stack {
 	/**
 	 * Getters / Setters
 	 */
-
-	get pmRun(): string | undefined {
-		return this.sao.answers.pm === 'yarn' ? 'yarn' : 'npm run'
-	}
-
-	get pm(): string | undefined {
-		return this.sao.answers.pm
-	}
-
-	get debug(): boolean {
-		return this.config.debug
-	}
-
-	get develop(): boolean {
-		return this.config.develop
-	}
-
-	get selectedPlugins(): string[] {
-		return this.sao.data.selectedPlugins
-	}
-
-	get selectedPluginsPaths(): string[] {
-		return this.selectedPlugins.map((pluginName: string) => {
-			return getPluginPath(this.sourcePath, pluginName)
-		})
-	}
 }

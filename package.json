@@ -1,123 +1,111 @@
 {
-  "name": "perfect-boilerplate",
-  "version": "3.0.1",
-  "description": "The ultimate boilerplate cli for modern applications",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/BotSeaio/Perfect-Boilerplate"
-  },
-  "author": "Tim Crooker <timothycrooker@gmail.com>",
-  "homepage": "https://botseaio.github.io/Perfect-Boilerplate/",
-  "bin": {
-    "perfect-boilerplate": "./lib/index.js"
-  },
-  "files": [
-    "lib"
-  ],
-  "scripts": {
-    "dev:build": "nodemon --watch src -e ts --ignore lib --exec npm run build",
-    "dev:plugins": "rimraf ./test && node ./lib test -D -s ../perfect-boilerplate-plugins",
-    "dev:debug:plugins": "rimraf ./test && node ./lib test -d -D -s ../perfect-boilerplate-plugins",
-    "dev:debug": "rimraf ./test && node ./lib test -d -s ../perfect-boilerplate-plugins",
-    "dev:start": "rimraf ./test && node ./lib test -s ../perfect-boilerplate-plugins",
-    "test:cov": "npm run lint && jest --coverage",
-    "test": "npm run lint && jest",
-    "lint": "eslint --fix",
-    "build": "npm run clean && tsc && babel src --out-dir lib --extensions \".ts,.js,.json\" --source-maps inline",
-    "clean": "rimraf ./lib",
-    "release": "dotenv release-it --only-version",
-    "docs:build": "npm --prefix ./docs run build",
-    "docs:dev": "npm --prefix ./docs run start",
-    "docs:deploy": "npm --prefix ./docs run deploy",
-    "docs:docusaurus": "npm --prefix ./docs run docusaurus"
-  },
-  "dependencies": {
-    "@types/md5": "^2.3.1",
-    "@types/temp": "^0.9.1",
-    "@types/valid-url": "^1.0.3",
-    "chalk": "^4.1.2",
-    "clear": "^0.1.0",
-    "commander": "6.2.0",
-    "deepmerge": "^4.2.2",
-    "figlet": "^1.5.2",
-    "md5": "^2.3.0",
-    "ora": "^5.4.1",
-    "path": "^0.12.7",
-    "perfectsao": "^2.0.3",
-    "promisify": "^0.0.3",
-    "prompts": "^2.4.1",
-    "rimraf": "^3.0.2",
-    "temp": "^0.9.4",
-    "valid-url": "^1.0.9",
-    "validate-npm-package-name": "^3.0.0"
-  },
-  "devDependencies": {
-    "@babel/cli": "^7.14.8",
-    "@babel/core": "^7.15.5",
-    "@babel/plugin-transform-runtime": "^7.15.0",
-    "@babel/preset-env": "^7.15.4",
-    "@babel/preset-typescript": "^7.15.0",
-    "@types/figlet": "^1.5.4",
-    "@types/jest": "^27.0.1",
-    "@types/node": "^16.6.1",
-    "@types/prompts": "^2.0.14",
-    "@types/validate-npm-package-name": "^3.0.3",
-    "@typescript-eslint/eslint-plugin": "^4.29.1",
-    "@typescript-eslint/parser": "^4.29.1",
-    "babel-jest": "^27.1.0",
-    "babel-plugin-module-resolver": "^4.1.0",
-    "dotenv-cli": "^4.0.0",
-    "eslint": "^7.32.0",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-config-standard": "^16.0.3",
-    "eslint-plugin-import": "^2.24.0",
-    "eslint-plugin-json": "^3.1.0",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-prettier": "^3.4.0",
-    "eslint-plugin-promise": "^5.1.0",
-    "husky": "^7.0.1",
-    "jest": "^27.1.0",
-    "lint-staged": "^11.1.2",
-    "nodemon": "^2.0.12",
-    "np": "^7.5.0",
-    "prettier": "^2.3.2",
-    "release-it": "^14.11.5",
-    "stylelint": "^13.13.1",
-    "stylelint-config-standard": "^22.0.0",
-    "stylelint-scss": "^3.20.1",
-    "ts-node": "^10.2.0",
-    "ts-node-dev": "^1.1.8",
-    "type-fest": "^2.2.0",
-    "typescript": "^4.3.5"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "lint-staged": {
-    "*.js": [
-      "standard --fix",
-      "git add"
-    ],
-    "*.{json,md}": [
-      "prettier --write",
-      "git add"
-    ]
-  },
-  "release-it": {
-    "git": {
-      "commit": true,
-      "commitMessage": "chore: release v${version}",
-      "tag": true,
-      "push": true
-    },
-    "npm": {
-      "publish": false
-    },
-    "github": {
-      "release": true
-    }
-  }
+	"name": "perfect-boilerplate",
+	"version": "3.0.1",
+	"description": "The ultimate boilerplate cli for modern applications",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/BotSeaio/Perfect-Boilerplate"
+	},
+	"author": "Tim Crooker <timothycrooker@gmail.com>",
+	"homepage": "https://botseaio.github.io/Perfect-Boilerplate/",
+	"bin": {
+		"generate": "./dist/index.js"
+	},
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"dev:build": "nodemon --watch src -e ts --ignore dist --exec npm run build",
+		"dev:start": "rimraf ./test && node ./dist test -s ../perfect-boilerplate-plugins",
+		"test": "npm run lint && jest",
+		"lint": "eslint --fix",
+		"build": "npm run clean && tsc && babel src --out-dir dist --extensions \".ts,.js,.json\" --source-maps inline",
+		"clean": "rimraf ./dist",
+		"release": "dotenv release-it --only-version"
+	},
+	"dependencies": {
+		"@types/md5": "^2.3.1",
+		"@types/temp": "^0.9.1",
+		"@types/valid-url": "^1.0.3",
+		"chalk": "^4.1.2",
+		"clear": "^0.1.0",
+		"commander": "6.2.0",
+		"deepmerge": "^4.2.2",
+		"figlet": "^1.5.2",
+		"grit-cli": "^0.0.3",
+		"md5": "^2.3.0",
+		"ora": "^5.4.1",
+		"path": "^0.12.7",
+		"promisify": "^0.0.3",
+		"prompts": "^2.4.1",
+		"rimraf": "^3.0.2",
+		"temp": "^0.9.4",
+		"valid-url": "^1.0.9",
+		"validate-npm-package-name": "^3.0.0"
+	},
+	"devDependencies": {
+		"@babel/cli": "^7.14.8",
+		"@babel/core": "^7.15.5",
+		"@babel/plugin-transform-runtime": "^7.15.0",
+		"@babel/preset-env": "^7.15.4",
+		"@babel/preset-typescript": "^7.15.0",
+		"@types/figlet": "^1.5.4",
+		"@types/jest": "^27.0.1",
+		"@types/node": "^16.6.1",
+		"@types/prompts": "^2.0.14",
+		"@types/validate-npm-package-name": "^3.0.3",
+		"@typescript-eslint/eslint-plugin": "^4.29.1",
+		"@typescript-eslint/parser": "^4.29.1",
+		"babel-jest": "^27.1.0",
+		"babel-plugin-module-resolver": "^4.1.0",
+		"dotenv-cli": "^4.0.0",
+		"eslint": "^7.32.0",
+		"eslint-config-prettier": "^8.3.0",
+		"eslint-config-standard": "^16.0.3",
+		"eslint-plugin-prettier": "^3.4.0",
+		"husky": "^7.0.1",
+		"jest": "^27.1.0",
+		"lint-staged": "^11.1.2",
+		"nodemon": "^2.0.12",
+		"np": "^7.5.0",
+		"prettier": "^2.3.2",
+		"release-it": "^14.11.5",
+		"stylelint": "^13.13.1",
+		"stylelint-config-standard": "^22.0.0",
+		"stylelint-scss": "^3.20.1",
+		"ts-node": "^10.2.0",
+		"ts-node-dev": "^1.1.8",
+		"type-fest": "^2.2.0",
+		"typescript": "^4.3.5"
+	},
+	"husky": {
+		"hooks": {
+			"pre-commit": "lint-staged"
+		}
+	},
+	"lint-staged": {
+		"*.js": [
+			"standard --fix",
+			"git add"
+		],
+		"*.{json,md}": [
+			"prettier --write",
+			"git add"
+		]
+	},
+	"release-it": {
+		"git": {
+			"commit": true,
+			"commitMessage": "chore: release v${version}",
+			"tag": true,
+			"push": true
+		},
+		"npm": {
+			"publish": false
+		},
+		"github": {
+			"release": true
+		}
+	}
 }

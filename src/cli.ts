@@ -2,8 +2,7 @@ import commander from 'commander'
 import path from 'path'
 import chalk from 'chalk'
 import currentProject from '../package.json'
-import { Cli, Config as DevConfig } from './dev'
-import { Stack } from './stack'
+import { PerfectPlate, Config as DevConfig } from './dev'
 
 const generator = path.resolve(__dirname, './')
 
@@ -28,7 +27,7 @@ const cli = async (): Promise<void> => {
 	const [projectDir] = program.args
 	const { source, debug, develop } = program
 
-	const cli = new Cli({
+	const perfectPlate = new PerfectPlate({
 		generator,
 		projectDir,
 		sourceDir: source,
@@ -37,11 +36,7 @@ const cli = async (): Promise<void> => {
 		enginePackage: currentProject,
 	} as DevConfig)
 
-	await cli.run()
-
-	const stack = new Stack(cli.stackConfig)
-
-	stack.run()
+	await perfectPlate.run()
 }
 
 export default cli

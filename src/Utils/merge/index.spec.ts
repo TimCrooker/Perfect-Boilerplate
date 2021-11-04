@@ -9,7 +9,7 @@ describe('Package Helper', () => {
 
 		const result = mergePluginData(
 			templateMeta,
-			'./__mocks__/plugins',
+			'./fixtures/plugins',
 			['plugin1', 'plugin2'],
 			'meta.json'
 		)

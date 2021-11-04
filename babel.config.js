@@ -14,5 +14,5 @@ module.exports = {
 			},
 		],
 	],
-	ignore: ['**/__mocks__/*'],
+	ignore: ['**/*.(test|spec).(ts|js)'],
 }

@@ -13,17 +13,15 @@ import {
 	mergePackages,
 	mergePluginData,
 } from '@Utils'
-import { Action, GeneratorConfig } from '../@types/sao'
 import { Stack } from './stack'
+import { GeneratorConfig } from 'projenerator'
 
-const saoConfig: GeneratorConfig = {
+const generatorConfig: GeneratorConfig = {
 	/**
 	 * Returns an array of prompts to display to the user
 	 */
-	prompts(sao) {
-		const stack = sao.opts.extras.stack as Stack
-
-		const sourcePath = stack.sourcePath
+	prompts() {
+		const sourcePath = this.sourcePath
 
 		const appName = stack.config.projectDir
 
@@ -65,13 +63,11 @@ const saoConfig: GeneratorConfig = {
 	 *
 	 * all functions that are run after this one will have access to "sao.data" which will contain all of this function's returns
 	 */
-	data(sao) {
-		const stack = sao.opts.extras.stack as Stack
-
+	data() {
 		/**
 		 * Package Manager
 		 */
-		sao.answers.pm = BinaryHelper.CanUseYarn() ? stack.pm : 'npm'
+		this.answers.pm = BinaryHelper.CanUseYarn() ? stack.pm : 'npm'
 
 		const pmRun = stack.pmRun
 
@@ -80,7 +76,7 @@ const saoConfig: GeneratorConfig = {
 		 */
 		const sourcePath = stack.sourcePath
 
-		const pluginAnswers = { ...sao.answers }
+		const pluginAnswers = { ...this.answers }
 		delete pluginAnswers.name
 
 		const selectedPlugins = getPluginsArray(pluginAnswers)
@@ -89,7 +85,7 @@ const saoConfig: GeneratorConfig = {
 			extendBase,
 			selectedPlugins,
 			sourcePath,
-			sao.answers
+			this.answers
 		)
 
 		const metaJSONPath = 'src/meta.json'
@@ -108,9 +104,9 @@ const saoConfig: GeneratorConfig = {
 		 * Return
 		 */
 		return {
-			...sao.answers,
+			...this.answers,
 			metaJSONPath,
-			answers: sao.answers,
+			answers: this.answers,
 			selectedPlugins,
 			pmRun,
 			pluginsData,
@@ -135,18 +131,18 @@ const saoConfig: GeneratorConfig = {
 	 *
 	 * @returns array of action objects
 	 */
-	async actions(sao) {
-		const stack = sao.opts.extras.stack as Stack
+	async actions() {
+		const stack = this.opts.extras.stack as Stack
 
-		if (sao.answers.name.length === 0) {
-			const error = sao.createError('App name is required!')
+		if (this.answers.name.length === 0) {
+			const error = this.createError('App name is required!')
 			throw error
 		}
 
 		/**
 		 * Validate app name
 		 */
-		const appNameValidation = validate(sao.answers.name)
+		const appNameValidation = validate(this.answers.name)
 
 		if (appNameValidation.warnings) {
 			appNameValidation.warnings.forEach((warn) => this.logger.warn(warn))
@@ -165,7 +161,7 @@ const saoConfig: GeneratorConfig = {
 				files: '**',
 				templateDir: path.join(sourcePath, 'template'),
 				data() {
-					return sao.data
+					return this.data
 				},
 			},
 			{
@@ -179,12 +175,12 @@ const saoConfig: GeneratorConfig = {
 					babelrc: '.babelrc',
 				},
 				data() {
-					return sao.data
+					return this.data
 				},
 			},
 		] as Action[]
 
-		const pluginAnswers = { ...sao.answers }
+		const pluginAnswers = { ...this.answers }
 		delete pluginAnswers.name
 
 		const selectedPlugins = getPluginsArray(pluginAnswers)
@@ -201,7 +197,7 @@ const saoConfig: GeneratorConfig = {
 			...selectedPlugins.map((plugin: string) => {
 				const customFilters = handleIgnore(
 					sourcePrompts?.ignores ?? [],
-					sao.answers,
+					this.answers,
 					plugin
 				)
 
@@ -219,7 +215,7 @@ const saoConfig: GeneratorConfig = {
 						...customFilters,
 					},
 					data() {
-						return sao.data
+						return this.data
 					},
 				}
 			})
@@ -235,7 +231,7 @@ const saoConfig: GeneratorConfig = {
 				'_.eslintrc.js': '.eslintrc.js',
 			},
 			data() {
-				return sao.data
+				return this.data
 			},
 		} as Action)
 
@@ -244,7 +240,7 @@ const saoConfig: GeneratorConfig = {
 		 */
 		actionsArray.push({
 			type: 'modify' as const,
-			files: sao.data.metaJSONPath,
+			files: this.data.metaJSONPath,
 			handler(data: Record<string, unknown>) {
 				return mergePluginData(data, sourcePath, selectedPlugins, 'meta.json')
 			},
@@ -257,7 +253,7 @@ const saoConfig: GeneratorConfig = {
 			type: 'modify' as const,
 			files: 'package.json',
 			handler(data: Record<string, unknown>) {
-				return mergePackages(data, sourcePath, selectedPlugins, sao.answers)
+				return mergePackages(data, sourcePath, selectedPlugins, this.answers)
 			},
 		})
 
@@ -305,8 +301,8 @@ const saoConfig: GeneratorConfig = {
 	/**
 	 * Runs before actions are executed
 	 */
-	async prepare(sao) {
-		const stack = sao.opts.extras.stack as Stack
+	async prepare() {
+		const stack = this.opts.extras.stack as Stack
 
 		await stack.prepare()
 	},
@@ -314,11 +310,11 @@ const saoConfig: GeneratorConfig = {
 	/**
 	 * Runs after actions are done being executed
 	 */
-	async completed(sao) {
-		const stack = sao.opts.extras.stack as Stack
+	async completed() {
+		const stack = this.opts.extras.stack as Stack
 
 		await stack.completed()
 	},
 }
 
-module.exports = saoConfig
+module.exports = generatorConfig
