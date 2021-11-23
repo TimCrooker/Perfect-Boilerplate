@@ -49,12 +49,6 @@ export class Stack {
 			logger.error(err)
 			process.exit(1)
 		})
-
-		!this.debug && (await this.installPackages())
-
-		!this.debug && this.runProjectScript('dev')
-
-		this.develop && (await this.watchPlugins())
 	}
 
 	/** Builds the generator for the stack  */
@@ -108,6 +102,7 @@ export class Stack {
 		// begin watching plugin pack directories for changes
 		await watchDirectories(pluginDirectories, true, event)
 	}
+
 	/** Rebuild project */
 	async rebuildProject(pluginName: string, filename: string): Promise<void> {
 		logger.info(

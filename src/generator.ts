@@ -13,30 +13,29 @@ import {
 	mergePackages,
 	mergePluginData,
 } from '@Utils'
-import { Stack } from './stack'
-import { GeneratorConfig } from 'projenerator'
+import { Action, GeneratorConfig } from 'grit-cli'
 
 const generatorConfig: GeneratorConfig = {
-	/**
-	 * Returns an array of prompts to display to the user
-	 */
 	prompts() {
 		const sourcePath = this.sourcePath
 
-		const appName = stack.config.projectDir
+		const sourcePrompts =
+			FSHelper.requireUncached(path.resolve(sourcePath, 'prompt.js')) || {}
 
-		// eslint-disable-next-line @typescript-eslint/no-var-requires
-		const sourcePrompts = FSHelper.requireUncached(
-			path.resolve(sourcePath, 'prompt.js')
-		)
-
-		return [
-			{
-				type: 'input',
+		return [teAction.add({
+				files: '**',
+				templateDir: path.join(sourcePath, 'template'),
+			}),
+			this.createPrompt.input({
 				name: 'name',
 				message: 'What will be the name of your app',
-				default: appName,
-			},
+				default: () => this.outDir,
+				validate: (name) => {
+					const { validForNewPackages } = validate(name)
+
+					return validForNewPackages ? true : 'Invalid name'
+				},
+			}),
 			...(BinaryHelper.CanUseYarn()
 				? [
 						{
@@ -52,25 +51,11 @@ const generatorConfig: GeneratorConfig = {
 				  ]
 				: []),
 			// presents the prompts from the selected plugin pack to the user
-			...(sourcePrompts?.prompts ?? []),
+			...(sourcePrompts.prompts ?? []),
 		]
 	},
 
-	/**
-	 * Runs after recieving answers from the user to all presented prompts
-	 *
-	 * This function is used for manipulating data before it gets passed to the actions function
-	 *
-	 * all functions that are run after this one will have access to "sao.data" which will contain all of this function's returns
-	 */
 	data() {
-		/**
-		 * Package Manager
-		 */
-		this.answers.pm = BinaryHelper.CanUseYarn() ? stack.pm : 'npm'
-
-		const pmRun = stack.pmRun
-
 		/**
 		 * Extend.js data
 		 */
@@ -108,65 +93,17 @@ const generatorConfig: GeneratorConfig = {
 			metaJSONPath,
 			answers: this.answers,
 			selectedPlugins,
-			pmRun,
 			pluginsData,
 			...extendData,
 		}
 	},
 
-	/**
-	 * Runs after manipulating data in the data function and gets passed that manipulated data
-	 *
-	 * Execute file and directory transformation actions
-	 *
-	 * actions are objects containing a set of instructions on a single transformation pattern
-	 *
-	 * ADD: Adds files to the destination path from the source path
-	 *
-	 * MOVE: Runs fs.rename or fs.copyFile to move a file from source path to destination path
-	 *
-	 * MODIFY: Modifies the contents of a file
-	 *
-	 * REMOVE: Deletes a file
-	 *
-	 * @returns array of action objects
-	 */
 	async actions() {
-		const stack = this.opts.extras.stack as Stack
+		const sourcePath = 'fake/path'
 
-		if (this.answers.name.length === 0) {
-			const error = this.createError('App name is required!')
-			throw error
-		}
-
-		/**
-		 * Validate app name
-		 */
-		const appNameValidation = validate(this.answers.name)
-
-		if (appNameValidation.warnings) {
-			appNameValidation.warnings.forEach((warn) => this.logger.warn(warn))
-		}
-
-		if (appNameValidation.errors) {
-			appNameValidation.errors.forEach((warn) => this.logger.error(warn))
-			process.exit(1)
-		}
-
-		const sourcePath = stack.sourcePath as string
-
-		const actionsArray = [
-			{
-				type: 'add',
-				files: '**',
-				templateDir: path.join(sourcePath, 'template'),
-				data() {
-					return this.data
-				},
-			},
-			{
-				type: 'move',
-				templateDir: path.join(sourcePath, 'template'),
+		const actionsArray: Action[] = [
+			this.crea
+			this.createAction.move({
 				patterns: {
 					gitignore: '.gitignore',
 					'_package.json': 'package.json',
@@ -174,25 +111,18 @@ const generatorConfig: GeneratorConfig = {
 					'_tsconfig.json': 'tsconfig.json',
 					babelrc: '.babelrc',
 				},
-				data() {
-					return this.data
-				},
-			},
-		] as Action[]
+			}),
+		]
 
 		const pluginAnswers = { ...this.answers }
 		delete pluginAnswers.name
 
 		const selectedPlugins = getPluginsArray(pluginAnswers)
 
-		// eslint-disable-next-line @typescript-eslint/no-var-requires
 		const sourcePrompts = FSHelper.requireUncached(
 			path.resolve(sourcePath, 'prompt.js')
 		)
 
-		/**
-		 *
-		 */
 		actionsArray.push(
 			...selectedPlugins.map((plugin: string) => {
 				const customFilters = handleIgnore(
@@ -201,8 +131,7 @@ const generatorConfig: GeneratorConfig = {
 					plugin
 				)
 
-				return {
-					type: 'add' as const,
+				return this.createAction.add({
 					files: '**',
 					templateDir: path.join(sourcePath, 'plugins', plugin),
 					filters: {
@@ -214,106 +143,92 @@ const generatorConfig: GeneratorConfig = {
 						'meta.json': false,
 						...customFilters,
 					},
-					data() {
-						return this.data
-					},
-				}
+				})
 			})
 		)
 
 		/**
 		 * eslintrc handler
 		 */
-		actionsArray.push({
-			type: 'move' as const,
-			patterns: {
-				'_.eslintrc': '.eslintrc',
-				'_.eslintrc.js': '.eslintrc.js',
-			},
-			data() {
-				return this.data
-			},
-		} as Action)
+		actionsArray.push(
+			this.createAction.move({
+				patterns: {
+					'_.eslintrc': '.eslintrc',
+					'_.eslintrc.js': '.eslintrc.js',
+				},
+			})
+		)
 
 		/**
 		 * meta.json handler
 		 */
-		actionsArray.push({
-			type: 'modify' as const,
-			files: this.data.metaJSONPath,
-			handler(data: Record<string, unknown>) {
-				return mergePluginData(data, sourcePath, selectedPlugins, 'meta.json')
-			},
-		})
+		actionsArray.push(
+			this.createAction.modify({
+				files: this.data.metaJSONPath,
+				handler(data: Record<string, unknown>) {
+					return mergePluginData(data, sourcePath, selectedPlugins, 'meta.json')
+				},
+			})
+		)
 
 		/**
 		 * package.json handler
 		 */
-		actionsArray.push({
-			type: 'modify' as const,
-			files: 'package.json',
-			handler(data: Record<string, unknown>) {
-				return mergePackages(data, sourcePath, selectedPlugins, this.answers)
-			},
-		})
+		actionsArray.push(
+			this.createAction.modify({
+				files: 'package.json',
+				handler: (fileData: Record<string, unknown>) => {
+					return mergePackages(
+						fileData,
+						sourcePath,
+						selectedPlugins,
+						this.answers
+					)
+				},
+			})
+		)
 
 		/**
 		 * tsconfig.json handler
 		 */
-		actionsArray.push({
-			type: 'modify' as const,
-			files: 'tsconfig.json',
-			handler(data: Record<string, unknown>) {
-				return mergeJSONFiles(
-					data,
-					sourcePath,
-					selectedPlugins,
-					'tsconfig.json',
-					{
-						arrayMerge: (dest: unknown[], source: unknown[]) => {
-							const arr = [...dest, ...source]
-							return arr.filter((el, i) => arr.indexOf(el) === i)
-						},
-					}
-				)
-			},
-		})
+		actionsArray.push(
+			this.createAction.modify({
+				files: 'tsconfig.json',
+				handler: (data: Record<string, unknown>) => {
+					return mergeJSONFiles(
+						data,
+						sourcePath,
+						selectedPlugins,
+						'tsconfig.json',
+						{
+							arrayMerge: (dest: unknown[], source: unknown[]) => {
+								const arr = [...dest, ...source]
+								return arr.filter((el, i) => arr.indexOf(el) === i)
+							},
+						}
+					)
+				},
+			})
+		)
 
 		/**
 		 * .babelrc handler
 		 */
-		actionsArray.push({
-			type: 'modify' as const,
-			files: '.babelrc',
-			async handler(data: string) {
-				const merged = await mergeBabel(
-					JSON.parse(data),
-					sourcePath,
-					selectedPlugins
-				)
-				return JSON.stringify(merged)
-			},
-		})
+		actionsArray.push(
+			this.createAction.modify({
+				files: '.babelrc',
+				handler: async (data: string) => {
+					const merged = await mergeBabel(
+						JSON.parse(data),
+						sourcePath,
+						selectedPlugins
+					)
+					return JSON.stringify(merged)
+				},
+			})
+		)
 
 		return actionsArray
-	},
-
-	/**
-	 * Runs before actions are executed
-	 */
-	async prepare() {
-		const stack = this.opts.extras.stack as Stack
-
-		await stack.prepare()
-	},
-
-	/**
-	 * Runs after actions are done being executed
-	 */
-	async completed() {
-		const stack = this.opts.extras.stack as Stack
-
-		await stack.completed()
 	},
 }
 

@@ -6,13 +6,13 @@ const path = require('path')
 module.exports = {
 	title: 'Botsea',
 	tagline: 'The fastest way to build web applications',
-	url: 'https://botseaio.github.io',
-	baseUrl: '/Perfect-Boilerplate/',
+	url: 'https://timcrooker.github.io',
+	baseUrl: '/Perfect-Boilerplate/', // Usually `/` or `/my-project/`
 	onBrokenLinks: 'throw',
 	onBrokenMarkdownLinks: 'warn',
 	favicon:
 		'https://res.cloudinary.com/dfmg5c8l9/image/upload/v1631209481/botsea/branding/logo/icon',
-	organizationName: 'botseaio', // Usually your GitHub org/user name.
+	organizationName: 'TimCrooker', // Usually your GitHub org/user name.
 	projectName: 'Perfect-Boilerplate', // Usually your repo name.
 	themeConfig: {
 		navbar: {
@@ -30,8 +30,8 @@ module.exports = {
 					label: 'Docs',
 				},
 				{
-					href: 'https://github.com/BotSeaio/Perfect-Boilerplate',
 					label: 'GitHub',
+					href: 'https://github.com/TimCrooker/Perfect-Boilerplate',
 					position: 'right',
 				},
 			],
@@ -44,7 +44,7 @@ module.exports = {
 					items: [
 						{
 							label: 'GitHub',
-							href: 'https://github.com/facebook/docusaurus',
+							href: 'https://github.com/TimCrooker/Perfect-Boilerplate',
 						},
 					],
 				},
@@ -64,7 +64,7 @@ module.exports = {
 					sidebarPath: require.resolve('./sidebars.js'),
 					// Please change this to your repo.
 					editUrl:
-						'https://github.com/facebook/docusaurus/edit/master/website/',
+						'https://github.com/TimCrooker/Perfect-Boilerplate/edit/master/docs/',
 				},
 				theme: {
 					customCss: [require.resolve('./src/css/custom.scss')],
